@@ -13,3 +13,6 @@ source(here::here("scripts", "03_cargar_datos.R"))
 
 message("Pipeline completado. Objetos generados: saber11_completo, saberpro_completo")
 message("Guardados en data/processed/")
+
+saveRDS(saber11_completo, here("data", "processed", "saber11_completo.rds"))
+saveRDS(saberpro_completo, here("data", "processed", "saberpro_completo.rds"))
