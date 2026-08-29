@@ -47,7 +47,6 @@ extraer_anio_de_nombre_saberpro <- function(nombre_archivo) {
   numero <- regmatches(nombre_archivo, regexpr("[0-9]{4}", nombre_archivo))
   return(as.integer(numero))
 }
-
 diccionario_homologacion_saberpro <- data.table(
   nombre_final = c(
     "estu_consecutivo", "periodo", "estu_tipodocumento", "estu_tipodocumentosb11",
@@ -55,7 +54,8 @@ diccionario_homologacion_saberpro <- data.table(
     "estu_coddane_cole_termino", "fami_nivel_sisben",
     "punt_sociales_ciudadanas", "punt_ingles", "punt_lectura_critica", "punt_matematicas",
     "punt_comuni_escrita", "punt_global", "percentil_global",
-    "inst_nombre_institucion", "inst_cod_institucion", "estu_inst_departamento"
+    "inst_nombre_institucion", "inst_cod_institucion", "estu_inst_departamento",
+    "estu_mcpio_presentacion", "estu_inst_municipio"
   ),
   nombre_en_archivo = c(
     "estu_consecutivo", "periodo", "estu_tipodocumento", "estu_tipodocumentosb11",
@@ -63,8 +63,20 @@ diccionario_homologacion_saberpro <- data.table(
     "estu_coddane_cole_termino", "fami_nivel_sisben",
     "mod_competen_ciudada_punt", "mod_ingles_punt", "mod_lectura_critica_punt", "mod_razona_cuantitat_punt",
     "mod_comuni_escrita_punt", "punt_global", "percentil_global",
-    "inst_nombre_institucion", "inst_cod_institucion", "estu_inst_departamento"
+    "inst_nombre_institucion", "inst_cod_institucion", "estu_inst_departamento",
+    "estu_mcpio_presentacion", "estu_inst_municipio"
   ),
-  periodo_desde = rep(2012, 20),
-  periodo_hasta = rep(2025, 20)
+  periodo_desde = rep(2012, 22),
+  periodo_hasta = rep(2025, 22)
+)
+
+# Verificación automática: si algún vector quedó desalineado, detiene el
+# script aquí mismo con un mensaje claro, en vez de dejar que el error
+# aparezca más adelante, lejos de la causa real.
+stopifnot(
+  "nombre_final y nombre_en_archivo deben tener el mismo largo" =
+    length(diccionario_homologacion_saberpro$nombre_final) ==
+    length(diccionario_homologacion_saberpro$nombre_en_archivo),
+  "No debe haber nombre_en_archivo duplicado sin distinción de periodo" =
+    !any(duplicated(diccionario_homologacion_saberpro[, .(nombre_en_archivo, periodo_desde, periodo_hasta)]))
 )

@@ -81,3 +81,40 @@ sum(chequeo_reforzado4_SB11[N > 1, N]) / nrow(saber11_2014_1) * 100
 chequeo_reforzado4_SaberPro <- saberpro_2016[, .N, by = .(estu_fechanacimiento, estu_genero, estu_tipodocumentosb11, estu_cod_reside_mcpio, estu_coddane_cole_termino, fami_estratovivienda)]
 table(chequeo_reforzado4_SaberPro$N > 1)
 sum(chequeo_reforzado4_SaberPro[N > 1, N]) / nrow(saberpro_2016) * 100
+
+
+## --- Refuerzo de llave para Saber Pro 2023-2024 ---------------------------
+# En 2023-2024 desaparecen estu_coddane_cole_termino (colegio) y, en 2024,
+# también estu_mcpio_reside — dos de las piezas más fuertes de la llave.
+# Colisión sin refuerzo en 2024: 88.03%. Se prueban dos variables alternativas
+# disponibles ese año: municipio de presentación del examen y municipio de
+# la institución (IES).
+
+ruta_2024 <- here("data", "raw", "SaberPro", "Examen_Saber_Pro_Genericas_2024.txt")
+
+test_2024 <- fread(
+  file = ruta_2024,
+  select = c("estu_consecutivo", "estu_fechanacimiento", "estu_genero",
+             "estu_tipodocumento", "fami_estratovivienda",
+             "estu_mcpio_presentacion", "estu_inst_municipio"),
+  encoding = "UTF-8"
+)
+
+chequeo_2024_actual <- test_2024[, .N, by = .(estu_fechanacimiento, estu_genero, estu_tipodocumento, fami_estratovivienda)]
+sum(chequeo_2024_actual[N > 1, N]) / nrow(test_2024) * 100
+
+chequeo_2024_v1 <- test_2024[, .N, by = .(estu_fechanacimiento, estu_genero, estu_tipodocumento,
+                                          fami_estratovivienda, estu_mcpio_presentacion)]
+sum(chequeo_2024_v1[N > 1, N]) / nrow(test_2024) * 100
+
+chequeo_2024_v2 <- test_2024[, .N, by = .(estu_fechanacimiento, estu_genero, estu_tipodocumento,
+                                          fami_estratovivienda, estu_inst_municipio)]
+sum(chequeo_2024_v2[N > 1, N]) / nrow(test_2024) * 100
+
+chequeo_2024_v3 <- test_2024[, .N, by = .(estu_fechanacimiento, estu_genero, estu_tipodocumento,
+                                          fami_estratovivienda, estu_mcpio_presentacion, estu_inst_municipio)]
+sum(chequeo_2024_v3[N > 1, N]) / nrow(test_2024) * 100
+
+# RESULTADO: combinación de ambas reduce la colisión de 88.03% a 26.98%.
+# Se incorporan al diccionario de homologación de Saber Pro como refuerzo
+# (ver scripts/01_diccionarios_homologacion.R).
