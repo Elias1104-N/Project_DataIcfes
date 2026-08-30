@@ -26,8 +26,7 @@ saberpro_completo[, estu_fechanacimiento := as.IDate(estu_fechanacimiento, forma
 # Aplica a todos los módulos genéricos, no solo lectura crítica, porque fue
 # un cambio de metodología de calificación completo (modelo TRI 3 parámetros).
 
-saberpro_completo[, puntaje_escala_comparable := periodo >= 20162]
-
+saberpro_completo[, puntaje_escala_comparable := periodo >= cfg$escala_saberpro$periodo_cambio]
 
 ## --- Valores centinela: texto vacío en género y estrato --------------------
 

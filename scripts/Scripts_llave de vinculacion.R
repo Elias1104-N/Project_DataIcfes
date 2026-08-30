@@ -556,55 +556,67 @@ saber11_completo[, .(valores = paste(unique(fami_estratovivienda), collapse = " 
 
 saberpro_completo[, .(valores = paste(unique(fami_estratovivienda), collapse = " | ")), by = periodo]
 
+## --- Valores centinela restantes (texto vacío) ------------------------------
+saber11_completo[estu_genero == "", estu_genero := NA]
+saberpro_completo[estu_genero == "", estu_genero := NA]
+saber11_completo[fami_estratovivienda == "", fami_estratovivienda := NA]
+saberpro_completo[fami_estratovivienda == "", fami_estratovivienda := NA]
 
-table(saber11_completo$estu_genero, useNA = "always")
-sum(is.na(saber11_completo$estu_genero))
-table(
-  saber11_completo$periodo,
-  is.na(saber11_completo$estu_genero)
-)
+sum(saber11_completo$estu_genero == "", na.rm = TRUE)
+sum(saberpro_completo$estu_genero == "", na.rm = TRUE)
+sum(saber11_completo$fami_estratovivienda == "", na.rm = TRUE)
+sum(saberpro_completo$fami_estratovivienda == "", na.rm = TRUE)
 
-table(saber11_completo$estu_tipodocumento, useNA = "always")
-sum(is.na(saber11_completo$estu_tipodocumento))
-table(
-  saber11_completo$periodo,
-  is.na(saber11_completo$estu_tipodocumento)
-)
+## --- Chequeo automatizado de homologación de categorías ---------------------
+# Compara el número de categorías únicas contra el número de categorías únicas
+# después de normalizar mayúsculas/espacios. Si difieren, hay inconsistencia
+# de escritura entre periodos que debe corregirse.
+verificar_homologacion <- function(tabla, columnas) {
+  for (col in columnas) {
+    if (col %in% names(tabla)) {
+      x <- tabla[[col]]
+      n_original <- length(unique(x))
+      n_normalizado <- length(unique(toupper(trimws(x))))
+      if (n_original != n_normalizado) {
+        cat("INCONSISTENCIA en", col, "- únicos:", n_original, "| normalizados:", n_normalizado, "\n")
+      } else {
+        cat("OK:", col, "- sin inconsistencias de formato\n")
+      }
+    }
+  }
+}
 
+cat("--- Saber 11 ---\n")
+verificar_homologacion(saber11_completo, c("estu_tipodocumento", "estu_genero",
+                                           "fami_estratovivienda", "fami_nivelsisben"))
+cat("--- Saber Pro ---\n")
+verificar_homologacion(saberpro_completo, c("estu_tipodocumento", "estu_genero",
+                                            "fami_estratovivienda", "fami_nivel_sisben",
+                                            "inst_nombre_institucion"))
 
-unique(saber11_completo$estu_tipodocumento)
-sum(saber11_completo$estu_tipodocumento == "", na.rm = TRUE)
+verificar_homologacion(saber11_completo, c("estu_tipodocumento", "estu_genero",
+                                           "fami_estratovivienda", "fami_nivelsisben"))
 
-sum(is.na(saber11_completo$estu_tipodocumento))
+verificar_homologacion(saberpro_completo, c("estu_tipodocumento", "estu_genero",
+                                            "fami_estratovivienda", "fami_nivel_sisben",
+                                            "inst_nombre_institucion"))
 
-table(
-  saber11_completo$periodo,
-  saber11_completo$estu_tipodocumento == "",
-  useNA = "always"
-)
+saberpro_completo[, inst_nombre_institucion := toupper(trimws(gsub("\\s+", " ", inst_nombre_institucion)))]
 
+## --- Normalización de texto libre (nombres de institución) ------------------
+# Único campo de texto libre en la base final; se estandariza mayúsculas y
+# espacios para reducir duplicados aparentes por formato inconsistente.
+saberpro_completo[, inst_nombre_institucion := toupper(trimws(gsub("\\s+", " ", inst_nombre_institucion)))]
 
-saber11_completo[
-  saber11_completo$estu_tipodocumento == "",
-  .(
-    periodo,
-    estu_consecutivo,
-    estu_fechanacimiento,
-    estu_genero,
-    estu_tipodocumento
-  )
-]
+sum(saberpro_completo$estu_tipodocumento == "")
+saberpro_completo[estu_tipodocumento == "", .N, by = archivo_origen]
 
-saber11_completo[
-  saber11_completo$estu_tipodocumento == "",
-  .(
-    periodo,
-    estu_consecutivo,
-    cole_cod_dane_establecimiento
-  )
-]
+sum(saberpro_completo$estu_tipodocumentosb11 == "")
+saberpro_completo[estu_tipodocumentosb11 == "", .N, by = archivo_origen]
 
+here::here()
+file.exists(here::here("data", "raw", "Saber11", "Examen_Saber_11_20141.txt"))
 
+list.files(here::here("scripts"))
 
-
-
+source(here::here("run_all.R"))

@@ -6,7 +6,7 @@ archivos_sb11_todos <- list.files(
 
 periodos_detectados <- sapply(basename(archivos_sb11_todos), extraer_periodo_de_nombre)
 
-archivos_sb11 <- archivos_sb11_todos[periodos_detectados >= 20141 & periodos_detectados <= 20252]
+archivos_sb11 <- archivos_sb11_todos[periodos_detectados >= cfg$ventana_saber11$periodo_desde & periodos_detectados <= cfg$ventana_saber11$periodo_hasta]
 
 lista_sb11 <- lapply(
   archivos_sb11,
@@ -25,8 +25,7 @@ archivos_saberpro_todos <- list.files(
 )
 
 anios_detectados <- sapply(basename(archivos_saberpro_todos), extraer_anio_de_nombre_saberpro)
-archivos_saberpro <- archivos_saberpro_todos[anios_detectados >= 2014 & anios_detectados <= 2025]
-
+archivos_saberpro <- archivos_saberpro_todos[anios_detectados >= cfg$ventana_saberpro$anio_desde & anios_detectados <= cfg$ventana_saberpro$anio_hasta]
 lista_saberpro <- lapply(
   archivos_saberpro,
   leer_saberpro,

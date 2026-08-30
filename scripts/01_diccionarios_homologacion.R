@@ -1,38 +1,36 @@
-diccionario_homologacion_sb11 <- data.table(
-  nombre_final = c(
-    "estu_consecutivo", "periodo", "estu_tipodocumento", "estu_fechanacimiento",
-    "estu_genero", "estu_mcpio_reside", "fami_estratovivienda",
-    "cole_cod_dane_establecimiento", "fami_nivelsisben",
-    "punt_sociales_ciudadanas", "punt_sociales_ciudadanas",
-    "punt_ingles",
-    "punt_lectura_critica", "punt_lectura_critica",
-    "punt_matematicas",
-    "punt_c_naturales", "punt_c_naturales",
-    "punt_global", "percentil_global"
-  ),
-  nombre_en_archivo = c(
-    "estu_consecutivo", "periodo", "estu_tipodocumento", "estu_fechanacimiento",
-    "estu_genero", "estu_cod_reside_mcpio", "fami_estratovivienda",
-    "cole_cod_dane_establecimiento", "fami_nivelsisben",
-    "punt_ciencias_sociales", "punt_sociales_ciudadanas",   # nombre viejo / nuevo
-    "punt_ingles",
-    "punt_lenguaje", "punt_lectura_critica",                 # nombre viejo / nuevo
-    "punt_matematicas",
-    "recaf_punt_c_naturales", "punt_c_naturales",             # nombre especial 2010-1 a 2014-1
-    "punt_global", "percentil_global"
-  ),
-  periodo_desde = c(
-    20101, 20101, 20101, 20101, 20101, 20101, 20101, 20101, 20101,
-    20101, 20142, 20101, 20101, 20142, 20101, 20101, 20142, 20142, 20142
-  ),
-  periodo_hasta = c(
-    20252, 20252, 20252, 20252, 20252, 20252, 20252, 20252, 20141,
-    20141, 20252, 20252, 20141, 20252, 20252, 20141, 20252, 20252, 20252
-  )
+#===============================================================================
+# 01_diccionarios_homologacion.R
+# Los diccionarios viven como archivos externos editables (data/metadata/),
+# no como data.table() escritos en este script — agregar una equivalencia o
+# un año nuevo con nombre distinto ya no requiere tocar código, solo el Excel.
+#===============================================================================
+
+diccionario_homologacion_sb11 <- as.data.table(
+  read_excel(here("data", "metadata", "diccionario_saber11.xlsx"))
+)
+
+diccionario_homologacion_saberpro <- as.data.table(
+  read_excel(here("data", "metadata", "diccionario_saberpro.xlsx"))
+)
+
+# Validación estructural: detiene la ejecución si algún Excel quedó mal
+# formado (columnas faltantes o vacío), en vez de dejarlo pasar en silencio.
+stopifnot(
+  "diccionario_saber11.xlsx debe tener columnas nombre_final, nombre_en_archivo, periodo_desde, periodo_hasta" =
+    all(c("nombre_final", "nombre_en_archivo", "periodo_desde", "periodo_hasta") %in% names(diccionario_homologacion_sb11)),
+  "diccionario_saberpro.xlsx debe tener columnas nombre_final, nombre_en_archivo, periodo_desde, periodo_hasta" =
+    all(c("nombre_final", "nombre_en_archivo", "periodo_desde", "periodo_hasta") %in% names(diccionario_homologacion_saberpro)),
+  "diccionario_saber11.xlsx no debe estar vacío" = nrow(diccionario_homologacion_sb11) > 0,
+  "diccionario_saberpro.xlsx no debe estar vacío" = nrow(diccionario_homologacion_saberpro) > 0
 )
 
 extraer_periodo_de_nombre <- function(nombre_archivo) {
   numero <- regmatches(nombre_archivo, regexpr("[0-9]{5}", nombre_archivo))
+  return(as.integer(numero))
+}
+
+extraer_anio_de_nombre_saberpro <- function(nombre_archivo) {
+  numero <- regmatches(nombre_archivo, regexpr("[0-9]{4}", nombre_archivo))
   return(as.integer(numero))
 }
 
@@ -42,41 +40,3 @@ construir_especificacion <- function(diccionario, periodo_archivo) {
   names(especificacion) <- filas_validas$nombre_final
   return(especificacion)
 }
-
-extraer_anio_de_nombre_saberpro <- function(nombre_archivo) {
-  numero <- regmatches(nombre_archivo, regexpr("[0-9]{4}", nombre_archivo))
-  return(as.integer(numero))
-}
-diccionario_homologacion_saberpro <- data.table(
-  nombre_final = c(
-    "estu_consecutivo", "periodo", "estu_tipodocumento", "estu_tipodocumentosb11",
-    "estu_fechanacimiento", "estu_genero", "estu_mcpio_reside", "fami_estratovivienda",
-    "estu_coddane_cole_termino", "fami_nivel_sisben",
-    "punt_sociales_ciudadanas", "punt_ingles", "punt_lectura_critica", "punt_matematicas",
-    "punt_comuni_escrita", "punt_global", "percentil_global",
-    "inst_nombre_institucion", "inst_cod_institucion", "estu_inst_departamento",
-    "estu_mcpio_presentacion", "estu_inst_municipio"
-  ),
-  nombre_en_archivo = c(
-    "estu_consecutivo", "periodo", "estu_tipodocumento", "estu_tipodocumentosb11",
-    "estu_fechanacimiento", "estu_genero", "estu_cod_reside_mcpio", "fami_estratovivienda",
-    "estu_coddane_cole_termino", "fami_nivel_sisben",
-    "mod_competen_ciudada_punt", "mod_ingles_punt", "mod_lectura_critica_punt", "mod_razona_cuantitat_punt",
-    "mod_comuni_escrita_punt", "punt_global", "percentil_global",
-    "inst_nombre_institucion", "inst_cod_institucion", "estu_inst_departamento",
-    "estu_mcpio_presentacion", "estu_inst_municipio"
-  ),
-  periodo_desde = rep(2012, 22),
-  periodo_hasta = rep(2025, 22)
-)
-
-# Verificación automática: si algún vector quedó desalineado, detiene el
-# script aquí mismo con un mensaje claro, en vez de dejar que el error
-# aparezca más adelante, lejos de la causa real.
-stopifnot(
-  "nombre_final y nombre_en_archivo deben tener el mismo largo" =
-    length(diccionario_homologacion_saberpro$nombre_final) ==
-    length(diccionario_homologacion_saberpro$nombre_en_archivo),
-  "No debe haber nombre_en_archivo duplicado sin distinción de periodo" =
-    !any(duplicated(diccionario_homologacion_saberpro[, .(nombre_en_archivo, periodo_desde, periodo_hasta)]))
-)
