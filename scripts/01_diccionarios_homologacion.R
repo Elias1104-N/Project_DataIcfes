@@ -12,7 +12,7 @@ diccionario_homologacion_sb11 <- data.table(
   ),
   nombre_en_archivo = c(
     "estu_consecutivo", "periodo", "estu_tipodocumento", "estu_fechanacimiento",
-    "estu_genero", "estu_mcpio_reside", "fami_estratovivienda",
+    "estu_genero", "estu_cod_reside_mcpio", "fami_estratovivienda",
     "cole_cod_dane_establecimiento", "fami_nivelsisben",
     "punt_ciencias_sociales", "punt_sociales_ciudadanas",   # nombre viejo / nuevo
     "punt_ingles",
@@ -59,7 +59,7 @@ diccionario_homologacion_saberpro <- data.table(
   ),
   nombre_en_archivo = c(
     "estu_consecutivo", "periodo", "estu_tipodocumento", "estu_tipodocumentosb11",
-    "estu_fechanacimiento", "estu_genero", "estu_mcpio_reside", "fami_estratovivienda",
+    "estu_fechanacimiento", "estu_genero", "estu_cod_reside_mcpio", "fami_estratovivienda",
     "estu_coddane_cole_termino", "fami_nivel_sisben",
     "mod_competen_ciudada_punt", "mod_ingles_punt", "mod_lectura_critica_punt", "mod_razona_cuantitat_punt",
     "mod_comuni_escrita_punt", "punt_global", "percentil_global",

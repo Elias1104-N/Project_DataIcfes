@@ -12,7 +12,8 @@ lista_sb11 <- lapply(
   archivos_sb11,
   leer_saber11,
   diccionario = diccionario_homologacion_sb11,
-  tipos_columna = c(cole_cod_dane_establecimiento = "character")
+  tipos_columna = c(cole_cod_dane_establecimiento = "character",
+                    estu_cod_reside_mcpio = "character")
 )
 
 saber11_completo <- rbindlist(lista_sb11, fill = TRUE)
@@ -31,7 +32,7 @@ lista_saberpro <- lapply(
   leer_saberpro,
   diccionario = diccionario_homologacion_saberpro,
   tipos_columna = c(estu_coddane_cole_termino = "character",
-                    inst_cod_institucion = "character")
+                    inst_cod_institucion = "character",estu_cod_reside_mcpio = "character")
 )
 
 saberpro_completo <- rbindlist(lista_saberpro, fill = TRUE)

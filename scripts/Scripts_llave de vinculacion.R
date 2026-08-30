@@ -449,3 +449,162 @@ table(saberpro_completo$periodo)     # verificación: los años/periodos represe
 #   - Deduplicación: primera presentación por estudiante (llave compuesta),
 #     aplicada por igual a ambas pruebas.
 #===============================================================================
+
+# Para cada periodo, mira una muestra de cómo se ve estu_mcpio_reside
+saber11_completo[, .(muestra = estu_mcpio_reside[1]), by = periodo]
+
+# Revisamos si estu_cod_reside_mcpio existe en un archivo de cada punto de la ventana
+readLines(here("data", "raw", "Saber11", "Examen_Saber_11_20141.txt"), n = 1) |> grepl("estu_cod_reside_mcpio", x = _)
+readLines(here("data", "raw", "Saber11", "Examen_Saber_11_20252.txt"), n = 1) |> grepl("estu_cod_reside_mcpio", x = _)
+
+saber11_completo[, .(muestra = estu_mcpio_reside[1]), by = periodo]
+
+saber11_completo[, .(muestra_fecha = estu_fechanacimiento[1]), by = periodo]
+saberpro_completo[, .(muestra_fecha = estu_fechanacimiento[1]), by = periodo]
+
+
+saber11_completo[, estu_fechanacimiento := as.IDate(estu_fechanacimiento, format = "%d/%m/%Y")]
+saberpro_completo[, estu_fechanacimiento := as.IDate(estu_fechanacimiento, format = "%d/%m/%Y")]
+
+sum(is.na(saber11_completo$estu_fechanacimiento))
+sum(is.na(saberpro_completo$estu_fechanacimiento))
+
+saber11_completo[is.na(estu_fechanacimiento), .N, by = archivo_origen]
+saberpro_completo[is.na(estu_fechanacimiento), .N, by = archivo_origen]
+
+# Recargar solo la fecha cruda de 2016, sin convertir, para inspeccionar
+ruta_2016 <- here("data", "raw", "SaberPro", "Examen_Saber_Pro_Genericas_2016.txt")
+fechas_2016 <- fread(file = ruta_2016, select = "estu_fechanacimiento", encoding = "UTF-8")
+
+# ¿Cómo se ven las fechas que fallaron al convertir?
+fechas_crudas_problema <- fechas_2016[as.IDate(estu_fechanacimiento, format = "%d/%m/%Y") |> is.na()]
+table(fechas_crudas_problema$estu_fechanacimiento)
+
+# Cuántas celdas están realmente vacías (texto vacío) en la columna cruda completa de 2016
+sum(fechas_2016$estu_fechanacimiento == "")
+
+# NOTA: 913 casos de estu_fechanacimiento vacío en Saber Pro 2016 (de 245,181
+# registros) corresponden a campo "no respondido" por el estudiante, no a un
+# problema de formato ni de tipificación. Verificado contra el dato crudo.
+# Categoría: "no respondido", distinta de "no preguntado" (ej. percentil_global
+# en 2014-1, que no existía como variable).
+
+
+str(saber11_completo[, .(punt_sociales_ciudadanas, punt_ingles, punt_lectura_critica, punt_matematicas, punt_c_naturales, punt_global)])
+str(saberpro_completo[, .(punt_sociales_ciudadanas, punt_ingles, punt_lectura_critica, punt_matematicas, punt_comuni_escrita, punt_global, percentil_global)])
+
+saberpro_completo[, .(min = min(punt_lectura_critica, na.rm = TRUE),
+                      max = max(punt_lectura_critica, na.rm = TRUE),
+                      promedio = mean(punt_lectura_critica, na.rm = TRUE)),
+                  by = periodo][order(periodo)]
+
+encabezado_2014 <- readLines(here("data", "raw", "SaberPro", "Examen_Saber_Pro_Genericas_2014.txt"), n = 1)
+grepl("recaf|recalif|escala", encabezado_2014, ignore.case = TRUE)
+
+# Si da TRUE, veamos exactamente qué nombre tiene:
+strsplit(encabezado_2014, ";")[[1]][grepl("lectura|recaf|recalif", strsplit(encabezado_2014, ";")[[1]], ignore.case = TRUE)]
+
+saberpro_completo[, puntaje_escala_comparable := periodo >= 20162]
+
+# ¿Existe la columna nueva?
+names(saberpro_completo)
+
+# ¿Tiene los valores esperados? (FALSE antes de 2016-2, TRUE desde ahí)
+table(saberpro_completo$periodo, saberpro_completo$puntaje_escala_comparable)
+#==================================================================================================================
+
+table(saber11_completo$fami_estratovivienda, useNA = "always")
+table(saber11_completo$fami_nivelsisben, useNA = "always")
+table(saber11_completo$estu_tipodocumento, useNA = "always")
+
+table(saberpro_completo$fami_estratovivienda, useNA = "always")
+table(saberpro_completo$fami_nivel_sisben, useNA = "always")
+
+# "Sin Estrato" -> NA explícito (valor centinela, no información real)
+saber11_completo[fami_estratovivienda == "Sin Estrato", fami_estratovivienda := NA]
+saberpro_completo[fami_estratovivienda == "Sin Estrato", fami_estratovivienda := NA]
+
+# Texto vacío -> NA explícito (Saber Pro)
+saberpro_completo[fami_estratovivienda == "", fami_estratovivienda := NA]
+
+saberpro_completo[fami_estratovivienda == "Estrato 0", .N, by = archivo_origen]
+
+saberpro_completo[fami_estratovivienda == "Estrato 0", fami_estratovivienda := NA]
+
+# "Estrato 0" (2016-2017, n=1726) tratado como valor centinela: no existe
+# oficialmente en el sistema de estratificación colombiano (rango real 1-6).
+# No se encontró documentación oficial del ICFES que lo defina como categoría
+# válida — decisión tomada por ausencia de evidencia en contra, no por
+# confirmación directa. Documentado como limitación de certeza en el informe.
+#===================================================================================
+
+saber11_completo[, .(valores = paste(unique(estu_genero), collapse = " | ")), by = periodo]
+
+sum(saber11_completo$estu_genero == "")
+saber11_completo[estu_genero == "", .N, by = archivo_origen]
+
+saber11_completo[estu_genero == "", estu_genero := NA]
+
+saberpro_completo[, .(valores = paste(unique(estu_genero), collapse = " | ")), by = periodo]
+
+sum(saberpro_completo$estu_genero == "")
+saberpro_completo[estu_genero == "", .N, by = archivo_origen]
+
+saberpro_completo[estu_genero == "", estu_genero := NA]
+
+saber11_completo[, .(valores = paste(unique(fami_estratovivienda), collapse = " | ")), by = periodo]
+
+saberpro_completo[, .(valores = paste(unique(fami_estratovivienda), collapse = " | ")), by = periodo]
+
+
+table(saber11_completo$estu_genero, useNA = "always")
+sum(is.na(saber11_completo$estu_genero))
+table(
+  saber11_completo$periodo,
+  is.na(saber11_completo$estu_genero)
+)
+
+table(saber11_completo$estu_tipodocumento, useNA = "always")
+sum(is.na(saber11_completo$estu_tipodocumento))
+table(
+  saber11_completo$periodo,
+  is.na(saber11_completo$estu_tipodocumento)
+)
+
+
+unique(saber11_completo$estu_tipodocumento)
+sum(saber11_completo$estu_tipodocumento == "", na.rm = TRUE)
+
+sum(is.na(saber11_completo$estu_tipodocumento))
+
+table(
+  saber11_completo$periodo,
+  saber11_completo$estu_tipodocumento == "",
+  useNA = "always"
+)
+
+
+saber11_completo[
+  saber11_completo$estu_tipodocumento == "",
+  .(
+    periodo,
+    estu_consecutivo,
+    estu_fechanacimiento,
+    estu_genero,
+    estu_tipodocumento
+  )
+]
+
+saber11_completo[
+  saber11_completo$estu_tipodocumento == "",
+  .(
+    periodo,
+    estu_consecutivo,
+    cole_cod_dane_establecimiento
+  )
+]
+
+
+
+
+

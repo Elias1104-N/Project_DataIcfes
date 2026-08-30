@@ -1,0 +1,60 @@
+# ==============================================================================
+# config.yml — Parámetros del pipeline de integración ICFES (Saber 11 / Saber Pro)
+#
+# Este archivo es el ÚNICO lugar donde deben cambiarse años, rutas o umbrales.
+# Cuando el ICFES publique Saber Pro 2026 (o Saber 11 2026-1), basta con:
+#   1. Copiar el/los .txt nuevo(s) a data/raw/SaberPro (o Saber11)
+#   2. Actualizar periodos.saber11_hasta / periodos.saberpro_hasta abajo
+#   3. Volver a ejecutar run_all.R
+# No se debe tocar ningún script en R/ para regenerar la base con el año nuevo.
+# ==============================================================================
+
+default:
+
+  # --- Rutas (relativas a la raíz del proyecto, resueltas con here::here()) ---
+  paths:
+    raw_saber11:        "data/raw/Saber11"
+    raw_saberpro:        "data/raw/SaberPro"
+    metadata_saber11:    "data/metadata/diccionario_saber11.xlsx"
+    metadata_saberpro:   "data/metadata/diccionario_saberpro.xlsx"
+    log_file:            "logs/ejecucion.log"
+
+  # --- Patrones de nombre de archivo esperados ---------------------------------
+  patrones:
+    saber11:  "^Examen_Saber_11_[0-9]{5}\\.txt$"
+    saberpro: "^Examen_Saber_Pro_Genericas_[0-9]{4}\\.txt$"
+
+  # --- Rango de periodos/años a incluir en la base consolidada -----------------
+  # saber11 usa codificación de periodo AAAAS (año + semestre: 1 o 2)
+  # saberpro usa codificación de año simple AAAA
+  periodos:
+    saber11_desde:  20141
+    saber11_hasta:  20252
+    saberpro_desde: 2014
+    saberpro_hasta: 2025
+
+  # --- Rango lógico válido de punt_global (falla ruidosamente si se excede) ---
+  validacion_puntajes:
+    saber11:
+      min: 0
+      max: 500
+    saberpro:
+      min: 0
+      max: 300
+
+  # --- Variables que conforman la llave de cruce; deben existir físicamente ---
+  # --- en el archivo crudo de cada periodo. Si falta alguna, el script debe ---
+  # --- abortar (fail-fast), porque sin ellas no se puede construir la llave. --
+  llave_critica:
+    saber11:
+      - estu_fechanacimiento
+      - estu_genero
+      - estu_tipodocumento
+      - estu_cod_reside_mcpio
+      - cole_cod_dane_establecimiento
+    saberpro:
+      - estu_fechanacimiento
+      - estu_genero
+      - estu_tipodocumento
+      - estu_cod_reside_mcpio
+      - estu_coddane_cole_termino

@@ -10,6 +10,7 @@ source(here::here("scripts", "00_setup.R"))
 source(here::here("scripts", "01_diccionarios_homologacion.R"))
 source(here::here("scripts", "02_funciones_lectura.R"))
 source(here::here("scripts", "03_cargar_datos.R"))
+source(here::here("scripts", "04_limpieza.R"))
 
 message("Pipeline completado. Objetos generados: saber11_completo, saberpro_completo")
 message("Guardados en data/processed/")
