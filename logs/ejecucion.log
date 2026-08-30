@@ -1,0 +1,49 @@
+
+=====================================================================
+Ejecución iniciada: 2026-08-30 15:38:57
+=====================================================================
+
+=====================================================================
+Ejecución iniciada: 2026-08-30 15:40:02
+=====================================================================
+
+=====================================================================
+Ejecución iniciada: 2026-08-30 15:44:43
+=====================================================================
+[2026-08-30 15:44:44] [WARNING] Archivo Examen_Saber_11_20141.txt - Faltan variables (marcadas NA): punt_global
+[2026-08-30 15:44:46] [WARNING] Archivo Examen_Saber_11_20142.txt - Faltan variables (marcadas NA): percentil_global, estu_trabaja_actualmente, fami_ingreso_familiar_mensual, estu_tipocarreradeseada
+[2026-08-30 15:44:47] [WARNING] Archivo Examen_Saber_11_20151.txt - Faltan variables (marcadas NA): percentil_global
+[2026-08-30 15:44:49] [WARNING] Archivo Examen_Saber_11_20152.txt - Faltan variables (marcadas NA): percentil_global
+[2026-08-30 15:44:50] [INFO] Archivo Examen_Saber_11_20161.txt - Leído con éxito sin variables faltantes.
+[2026-08-30 15:44:52] [INFO] Archivo Examen_Saber_11_20162.txt - Leído con éxito sin variables faltantes.
+[2026-08-30 15:44:53] [INFO] Archivo Examen_Saber_11_20171.txt - Leído con éxito sin variables faltantes.
+[2026-08-30 15:44:57] [INFO] Archivo Examen_Saber_11_20172.txt - Leído con éxito sin variables faltantes.
+[2026-08-30 15:44:57] [INFO] Archivo Examen_Saber_11_20181.txt - Leído con éxito sin variables faltantes.
+[2026-08-30 15:45:02] [INFO] Archivo Examen_Saber_11_20182.txt - Leído con éxito sin variables faltantes.
+[2026-08-30 15:45:02] [INFO] Archivo Examen_Saber_11_20191.txt - Leído con éxito sin variables faltantes.
+[2026-08-30 15:45:06] [INFO] Archivo Examen_Saber_11_20192.txt - Leído con éxito sin variables faltantes.
+[2026-08-30 15:45:06] [INFO] Archivo Examen_Saber_11_20201.txt - Leído con éxito sin variables faltantes.
+[2026-08-30 15:45:09] [INFO] Archivo Examen_Saber_11_20202.txt - Leído con éxito sin variables faltantes.
+[2026-08-30 15:45:09] [INFO] Archivo Examen_Saber_11_20211.txt - Leído con éxito sin variables faltantes.
+[2026-08-30 15:45:14] [INFO] Archivo Examen_Saber_11_20212.txt - Leído con éxito sin variables faltantes.
+[2026-08-30 15:45:14] [INFO] Archivo Examen_Saber_11_20221.txt - Leído con éxito sin variables faltantes.
+[2026-08-30 15:45:21] [INFO] Archivo Examen_Saber_11_20222.txt - Leído con éxito sin variables faltantes.
+[2026-08-30 15:45:21] [INFO] Archivo Examen_Saber_11_20231.txt - Leído con éxito sin variables faltantes.
+[2026-08-30 15:45:24] [INFO] Archivo Examen_Saber_11_20232.txt - Leído con éxito sin variables faltantes.
+[2026-08-30 15:45:24] [INFO] Archivo Examen_Saber_11_20241.txt - Leído con éxito sin variables faltantes.
+[2026-08-30 15:45:29] [INFO] Archivo Examen_Saber_11_20242.txt - Leído con éxito sin variables faltantes.
+[2026-08-30 15:45:29] [INFO] Archivo Examen_Saber_11_20251.txt - Leído con éxito sin variables faltantes.
+[2026-08-30 15:45:32] [INFO] Archivo Examen_Saber_11_20252.txt - Leído con éxito sin variables faltantes.
+[2026-08-30 15:45:48] [WARNING] Archivo Examen_Saber_Pro_Genericas_2014.txt - Faltan variables (marcadas NA): punt_global, percentil_global
+[2026-08-30 15:45:51] [WARNING] Archivo Examen_Saber_Pro_Genericas_2015.txt - Faltan variables (marcadas NA): punt_global, percentil_global
+[2026-08-30 15:45:53] [WARNING] Archivo Examen_Saber_Pro_Genericas_2016.txt - Faltan variables (marcadas NA): fami_nivel_sisben, estu_trabaja_actualmente, fami_ingreso_familiar_mensual
+[2026-08-30 15:46:01] [WARNING] Archivo Examen_Saber_Pro_Genericas_2017.txt - Faltan variables (marcadas NA): fami_nivel_sisben, estu_trabaja_actualmente, fami_ingreso_familiar_mensual
+[2026-08-30 15:46:03] [WARNING] Archivo Examen_Saber_Pro_Genericas_2018.txt - Faltan variables (marcadas NA): fami_nivel_sisben, estu_trabaja_actualmente, fami_ingreso_familiar_mensual
+[2026-08-30 15:46:05] [WARNING] Archivo Examen_Saber_Pro_Genericas_2019.txt - Faltan variables (marcadas NA): fami_nivel_sisben, estu_trabaja_actualmente, fami_ingreso_familiar_mensual
+[2026-08-30 15:46:07] [WARNING] Archivo Examen_Saber_Pro_Genericas_2020.txt - Faltan variables (marcadas NA): fami_nivel_sisben, estu_trabaja_actualmente, fami_ingreso_familiar_mensual
+[2026-08-30 15:46:08] [INFO] Archivo Examen_Saber_Pro_Genericas_2021.txt - Leído con éxito sin variables faltantes.
+[2026-08-30 15:46:10] [INFO] Archivo Examen_Saber_Pro_Genericas_2022.txt - Leído con éxito sin variables faltantes.
+[2026-08-30 15:46:11] [WARNING] Archivo Examen_Saber_Pro_Genericas_2023.txt - Faltan variables (marcadas NA): estu_coddane_cole_termino
+[2026-08-30 15:46:12] [WARNING] Archivo Examen_Saber_Pro_Genericas_2024.txt - Faltan variables (marcadas NA): estu_tipodocumentosb11, estu_mcpio_reside, estu_depto_reside, estu_coddane_cole_termino
+[2026-08-30 15:49:24] [INFO] Particion Saber Pro para cruce: 2273459 con llave estandar, 459867 con llave reforzada (periodos 2023-2024).
+[2026-08-30 15:49:35] [INFO] Cruce completado: 243689 registros totales (167300 con llave estandar, 76389 con llave reforzada).

@@ -10,6 +10,7 @@
 #' @param mensaje  Texto a registrar.
 #' @param tipo     "INFO", "WARNING" o "ERROR". Default "INFO".
 #' @param log_file Ruta absoluta al archivo de log (usualmente config$paths$log_file).
+
 escribir_log <- function(mensaje, tipo = "INFO", log_file) {
   linea <- sprintf(
     "[%s] [%s] %s",
@@ -34,3 +35,4 @@ iniciar_log <- function(log_file) {
   )
   invisible(NULL)
 }
+

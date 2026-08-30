@@ -26,7 +26,7 @@ saberpro_completo[, estu_fechanacimiento := as.IDate(estu_fechanacimiento, forma
 # Aplica a todos los módulos genéricos, no solo lectura crítica, porque fue
 # un cambio de metodología de calificación completo (modelo TRI 3 parámetros).
 
-saberpro_completo[, puntaje_escala_comparable := periodo >= cfg$escala_saberpro$periodo_cambio]
+saberpro_completo[, puntaje_escala_comparable := periodo >= config$escala_saberpro$periodo_cambio]
 
 ## --- Valores centinela: texto vacío en género y estrato --------------------
 
@@ -69,6 +69,58 @@ saberpro_completo[fami_estratovivienda == "", fami_estratovivienda := NA]
 # institución cuente como "distinta" solo por diferencias de formato.
 saberpro_completo[, inst_nombre_institucion := toupper(trimws(gsub("\\s+", " ", inst_nombre_institucion)))]
 
+sum(saberpro_completo$estu_tipodocumento == "")
+saberpro_completo[estu_tipodocumento == "", .N, by = archivo_origen]
+
+sum(saberpro_completo$estu_tipodocumentosb11 == "")
+saberpro_completo[estu_tipodocumentosb11 == "", .N, by = archivo_origen]
+
+# Fail-fast de puntajes usando los parámetros de config.yml
+rango_sb11 <- config$validacion_rangos$saber11_punt_global
+if (nrow(saber11_completo[!is.na(punt_global) & (punt_global < rango_sb11[1] | punt_global > rango_sb11[2])]) > 0) {
+  stop("ERROR: Puntajes globales de Saber 11 fuera del rango permitido en config.yml")
+}
+
+rango_spro <- config$validacion_rangos$saberpro_punt_global
+if (nrow(saberpro_completo[!is.na(punt_global) & (punt_global < rango_spro[1] | punt_global > rango_spro[2])]) > 0) {
+  stop("ERROR: Puntajes globales de Saber Pro fuera del rango permitido en config.yml")
+}
+
+
+saber11_completo <- saber11_completo[
+  order(periodo),
+  .SD[1],
+  by = .(estu_fechanacimiento, estu_genero, estu_tipodocumento,
+         estu_mcpio_reside, cole_cod_dane_establecimiento, fami_estratovivienda)
+]
+
+nrow(saber11_completo)
+
+saberpro_completo <- saberpro_completo[
+  order(periodo),
+  .SD[1],
+  by = .(estu_fechanacimiento, estu_genero, estu_tipodocumentosb11,
+         estu_mcpio_reside, estu_coddane_cole_termino, fami_estratovivienda,
+         estu_mcpio_presentacion, estu_inst_municipio)
+]
+
+nrow(saberpro_completo)
+table(saberpro_completo$periodo)
+
+# La deduplicación inicial (sin variables de refuerzo) generaba pérdida
+# artificial en 2023-2024 y 2016-2, porque data.table agrupa NA==NA como
+# "iguales" al usar by= — estudiantes distintos con colegio/municipio
+# de residencia faltantes (documentado en Fase 4) se fusionaban por error.
+# Se corrigió agregando estu_mcpio_presentacion y estu_inst_municipio
+# (mismo refuerzo ya usado para la llave de vinculación) al agrupamiento
+# de deduplicación. Verificado: caída en 2024 pasó de 65-84% a 13-29%,
+# consistente con el resto de la serie.
+
+# Preserva el tipo de documento ACTUAL de Saber Pro con otro nombre, antes de
+# liberar "estu_tipodocumento" para que sea el nombre común de la llave
+setnames(saberpro_completo, "estu_tipodocumento", "estu_tipodocumento_actual_sbpro")
+setnames(saberpro_completo, "estu_tipodocumentosb11", "estu_tipodocumento")
+setnames(saberpro_completo, "estu_coddane_cole_termino", "cole_cod_dane_establecimiento")
 
 
 

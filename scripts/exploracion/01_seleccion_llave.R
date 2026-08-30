@@ -96,7 +96,7 @@ test_2024 <- fread(
   file = ruta_2024,
   select = c("estu_consecutivo", "estu_fechanacimiento", "estu_genero",
              "estu_tipodocumento", "fami_estratovivienda",
-             "estu_mcpio_presentacion", "estu_inst_municipio"),
+             "estu_mcpio_presentacion", "estu_puesto"),
   encoding = "UTF-8"
 )
 
@@ -112,9 +112,9 @@ chequeo_2024_v2 <- test_2024[, .N, by = .(estu_fechanacimiento, estu_genero, est
 sum(chequeo_2024_v2[N > 1, N]) / nrow(test_2024) * 100
 
 chequeo_2024_v3 <- test_2024[, .N, by = .(estu_fechanacimiento, estu_genero, estu_tipodocumento,
-                                          fami_estratovivienda, estu_mcpio_presentacion, estu_inst_municipio)]
+                                          fami_estratovivienda, estu_mcpio_presentacion, estu_puesto)]
 sum(chequeo_2024_v3[N > 1, N]) / nrow(test_2024) * 100
 
-# RESULTADO: combinación de ambas reduce la colisión de 88.03% a 26.98%.
+# RESULTADO: combinación de ambas reduce la colisión de 88.03% a 33.47538%.
 # Se incorporan al diccionario de homologación de Saber Pro como refuerzo
 # (ver scripts/01_diccionarios_homologacion.R).

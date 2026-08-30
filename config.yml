@@ -21,3 +21,20 @@ default:
   validacion_rangos:
     saber11_punt_global: [0, 500]
     saberpro_punt_global: [0, 300]
+  llave_cruce:
+    estandar:
+      saber11:  ["estu_fechanacimiento", "estu_genero", "estu_tipodocumento", "estu_mcpio_reside", "cole_cod_dane_establecimiento", "fami_estratovivienda"]
+      saberpro: ["estu_fechanacimiento", "estu_genero", "estu_tipodocumento", "estu_mcpio_reside", "cole_cod_dane_establecimiento", "fami_estratovivienda"]
+    reforzada:
+      saber11:  ["estu_fechanacimiento", "estu_genero", "estu_tipodocumento", "fami_estratovivienda", "estu_mcpio_presentacion"]
+      saberpro: ["estu_fechanacimiento", "estu_genero", "estu_tipodocumento", "fami_estratovivienda", "estu_mcpio_presentacion"]
+    periodo_reforzada_desde: 2023
+    periodo_reforzada_hasta: 2024
+
+  # Falta esta sección — necesaria para ruta_log, y probablemente para los diccionarios
+  paths:
+    raw_saber11:       "data/raw/Saber11"
+    raw_saberpro:       "data/raw/SaberPro"
+    metadata_saber11:    "data/metadata/diccionario_saber11.xlsx"
+    metadata_saberpro:   "data/metadata/diccionario_saberpro.xlsx"
+    log_file:            "logs/ejecucion.log"

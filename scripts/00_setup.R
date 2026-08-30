@@ -1,6 +1,8 @@
 library(here)
 library(data.table)
-library(config)   # instala primero con install.packages("config") si no lo tienes
+library(config) 
+library(yaml)
 library(readxl)
 
-cfg <- config::get(file = here("config.yml"))
+config <- config::get(file = here("config.yml"))
+ruta_log <- here(config$paths$log_file)
