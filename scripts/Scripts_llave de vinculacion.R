@@ -721,3 +721,42 @@ escribir_log(sprintf(
 conteo_llave <- base_cruzada[, .N, by = llave_cruce]
 table(conteo_llave$N)
 
+diccionario_homologacion_sb11[nombre_final == "estu_mcpio_presentacion" | nombre_en_archivo %like% "mcpio_presentacion"]
+diccionario_homologacion_saberpro[nombre_final == "estu_mcpio_presentacion" | nombre_en_archivo %like% "mcpio_presentacion"]
+
+nrow(base_cruzada)
+table(base_cruzada$llave_reforzada_usada)
+
+table(saber11_completo$estu_genero, saber11_completo$periodo)
+table(saber11_completo$punt_sociales_ciudadanas, saber11_completo$periodo)
+
+# ¿cómo vienen tus códigos reales del ICFES?
+saber11_completo[, .N, by = nchar(estu_mcpio_reside)]
+
+saber11_completo[nchar(estu_mcpio_reside) == 4, unique(estu_cod_reside_depto)][1:10]
+saber11_completo[nchar(estu_mcpio_reside) == 9, unique(estu_mcpio_reside)][1:10]
+saber11_completo[nchar(estu_mcpio_reside) == 11, unique(estu_mcpio_reside)][1:10]
+
+
+
+
+
+saber11_completo[, .N, by = nchar(estu_cod_reside_mcpio)]
+saber11_completo[, .N, by = nchar(estu_cod_reside_depto)]
+
+# ¿cuántas filas de cada lado por combinación de llave? si el máximo es muy
+# alto, el merge puede estar generando muchas más filas de las esperadas
+saber11_completo[, .N, by = mget(config$llave_cruce$estandar$saber11)][, max(N)]
+saberpro_completo[, .N, by = mget(config$llave_cruce$estandar$saberpro)][, max(N)]
+
+# Encuentra cuál combinación específica tiene 37 repeticiones
+grupos_spro <- saberpro_completo[, .N, by = mget(config$llave_cruce$estandar$saberpro)]
+grupo_sospechoso <- grupos_spro[N == 37]
+print(grupo_sospechoso)
+
+# Mira esas 37 filas completas — ¿son la misma persona presentando en distintos
+# periodos (legítimo), o hay algo raro (fechas de nacimiento idénticas por
+# coincidencia real, o un valor centinela colándose como si fuera un valor real)?
+saberpro_completo[grupo_sospechoso, on = config$llave_cruce$estandar$saberpro][, .(periodo, estu_consecutivo)]
+
+

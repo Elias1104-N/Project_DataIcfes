@@ -40,3 +40,4 @@ construir_especificacion <- function(diccionario, periodo_archivo) {
   names(especificacion) <- filas_validas$nombre_final
   return(especificacion)
 }
+

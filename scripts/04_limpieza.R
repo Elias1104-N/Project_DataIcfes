@@ -15,6 +15,26 @@ saberpro_completo[, estu_fechanacimiento := as.IDate(estu_fechanacimiento, forma
 # en 2014-1, que no existía como variable). Otros ~17-40 casos por archivo en
 # el resto de periodos son ruido normal de captura, sin patrón de concentración.
 
+## --- Padding de códigos DANE a longitud oficial (evita perder ceros) -------
+saber11_completo[!is.na(estu_cod_reside_mcpio), estu_cod_reside_mcpio := sprintf("%05d", as.integer(estu_cod_reside_mcpio))]
+saber11_completo[!is.na(estu_cod_reside_depto), estu_cod_reside_depto := sprintf("%02d", as.integer(estu_cod_reside_depto))]
+saberpro_completo[!is.na(estu_cod_reside_mcpio), estu_cod_reside_mcpio := sprintf("%05d", as.integer(estu_cod_reside_mcpio))]
+saberpro_completo[!is.na(estu_cod_reside_depto), estu_cod_reside_depto := sprintf("%02d", as.integer(estu_cod_reside_depto))]
+
+## --- Fechas centinela confirmadas (no son nacimientos reales) --------------
+# 1900-01-01: imposible demográficamente (edad >100 años). 1980-01-31: pico
+# aislado ~10x sus fechas vecinas (814 vs 55-90), patrón típico de valor
+# "por defecto" del sistema. Verificado, no se trata de date heaping normal.
+saber11_completo[estu_fechanacimiento == as.IDate("1900-01-01"), estu_fechanacimiento := NA]
+saberpro_completo[estu_fechanacimiento == as.IDate("1900-01-01"), estu_fechanacimiento := NA]
+saber11_completo[estu_fechanacimiento == as.IDate("1980-01-31"), estu_fechanacimiento := NA]
+saberpro_completo[estu_fechanacimiento == as.IDate("1980-01-31"), estu_fechanacimiento := NA]
+
+# NOTA: Saber 11 muestra date heaping (fechas día=mes: 09-09, 12-12, etc.,
+# 2x-6.4x el promedio de 291 registros/fecha) — patrón conocido en datos
+# autorreportados, NO se anula por no ser demográficamente imposible.
+# Documentado como limitación de precisión, no como error de captura.
+
 ## --- Marca de comparabilidad de escala en puntajes Saber Pro ---------------
 # El ICFES cambió la escala de calificación de Saber Pro en 2016 (de un rango
 # aprox. 0-20 a 0-300), confirmado por la Resolución 455 de 2016: "las escalas
@@ -28,12 +48,17 @@ saberpro_completo[, estu_fechanacimiento := as.IDate(estu_fechanacimiento, forma
 
 saberpro_completo[, puntaje_escala_comparable := periodo >= config$escala_saberpro$periodo_cambio]
 
+## --- Valores centinela: texto vacío en variables geográficas/colegio ------
+saber11_completo[estu_mcpio_reside == "", estu_mcpio_reside := NA]
+saberpro_completo[estu_mcpio_reside == "", estu_mcpio_reside := NA]
+saber11_completo[cole_cod_dane_establecimiento == "", cole_cod_dane_establecimiento := NA]
+saberpro_completo[estu_coddane_cole_termino == "", estu_coddane_cole_termino := NA]
+
 ## --- Valores centinela: texto vacío en género y estrato --------------------
 
 # "Sin Estrato" -> NA explícito (valor centinela, no información socioeconómica real)
 saber11_completo[fami_estratovivienda == "Sin Estrato", fami_estratovivienda := NA]
 saberpro_completo[fami_estratovivienda == "Sin Estrato", fami_estratovivienda := NA]
-
 
 # "Estrato 0" (Saber Pro 2016-2017, n=1,726) tratado como valor centinela: no
 # existe oficialmente en el sistema de estratificación colombiano (rango 1-6).
@@ -42,6 +67,13 @@ saberpro_completo[fami_estratovivienda == "Sin Estrato", fami_estratovivienda :=
 # confirmación directa. Documentado como limitación de certeza en el informe.
 
 saberpro_completo[fami_estratovivienda == "Estrato 0", fami_estratovivienda := NA]
+
+## --- Año real de Saber Pro (periodo es codigo AAAAS de 5 digitos, NO año simple) ---
+# CRÍTICO: periodo en Saber Pro NO es un año de 4 dígitos como se asumió
+# originalmente — es un código AAAAS igual que Saber 11 (ej. 20233, no 2023).
+# Sin esta conversión, cualquier comparación directa de periodo contra un año
+# (partición de llave reforzada, cálculo de rezago) da resultados sin sentido.
+saberpro_completo[, anio_saberpro := periodo %/% 10]
 
 # Texto vacío ("") en estas variables significa "no respondido", no una
 # categoría válida. Se convierte a NA explícito. Verificado en
@@ -63,19 +95,63 @@ saberpro_completo[estu_genero == "", estu_genero := NA]
 saber11_completo[fami_estratovivienda == "", fami_estratovivienda := NA]
 saberpro_completo[fami_estratovivienda == "", fami_estratovivienda := NA]
 
-## --- Normalización de texto libre (nombre de institución, Saber Pro) -------
-# Único campo de texto libre en la base final: colapsa espacios múltiples,
-# quita espacios al inicio/final, y unifica mayúsculas — evita que la misma
-# institución cuente como "distinta" solo por diferencias de formato.
-saberpro_completo[, inst_nombre_institucion := toupper(trimws(gsub("\\s+", " ", inst_nombre_institucion)))]
+## --- Normalización de texto libre -------------------------------------------
+# Colapsa espacios múltiples, quita espacios al inicio/final, unifica
+# mayúsculas y quita tildes/diacríticos — evita que la misma institución o
+# colegio cuente como "distinto" solo por diferencias de formato.
+normalizar_texto <- function(x) {
+  x <- toupper(trimws(x))
+  x <- gsub("\\s+", " ", x)
+  x <- iconv(x, from = "UTF-8", to = "ASCII//TRANSLIT")
+  return(x)
+}
 
-sum(saberpro_completo$estu_tipodocumento == "")
-saberpro_completo[estu_tipodocumento == "", .N, by = archivo_origen]
+saberpro_completo[, inst_nombre_institucion := normalizar_texto(inst_nombre_institucion)]
+saber11_completo[, cole_nombre_establecimiento := normalizar_texto(cole_nombre_establecimiento)]
+saberpro_completo[, cole_nombre_establecimiento := normalizar_texto(cole_nombre_establecimiento)]
 
-sum(saberpro_completo$estu_tipodocumentosb11 == "")
-saberpro_completo[estu_tipodocumentosb11 == "", .N, by = archivo_origen]
+## --- Validación de códigos de municipio contra DIVIPOLA --------------------
+tabla_dane <- as.data.table(read_excel(here(config$paths$metadata_dane)))
+setnames(tabla_dane, c("codigo_departamento", "nombre_departamento", "codigo_municipio", "nombre_municipio"))
+tabla_dane <- tabla_dane[!is.na(codigo_municipio)]
+tabla_dane[, codigo_municipio := sprintf("%05d", as.integer(codigo_municipio))]
+tabla_dane[, codigo_departamento := sprintf("%02d", as.integer(codigo_departamento))]
+tabla_dane <- unique(tabla_dane)
 
-# Fail-fast de puntajes usando los parámetros de config.yml
+validar_codigos_dane <- function(datos, nombre_tabla) {
+  no_reconocidos <- setdiff(unique(datos$estu_cod_reside_mcpio), tabla_dane$codigo_municipio)
+  no_reconocidos <- no_reconocidos[!is.na(no_reconocidos)]
+  if (length(no_reconocidos) > 0) {
+    escribir_log(sprintf("[%s] %d codigos de municipio no reconocidos por DIVIPOLA: %s",
+                         nombre_tabla, length(no_reconocidos), paste(head(no_reconocidos, 20), collapse = ", ")),
+                 tipo = "WARNING", log_file = ruta_log)
+  }
+  invisible(no_reconocidos)
+}
+
+validar_codigos_dane(saber11_completo, "saber11_completo")
+validar_codigos_dane(saberpro_completo, "saberpro_completo")
+
+## --- Formalizar la distinción no_preguntado / no_respondido -----------------
+marcar_motivo_na <- function(datos, columna, diccionario, col_periodo = "periodo") {
+  col_flag <- paste0(columna, "_motivo_na")
+  datos[, (col_flag) := fifelse(
+    is.na(get(columna)),
+    fifelse(
+      get(col_periodo) < diccionario[nombre_final == columna, min(periodo_desde)] |
+        get(col_periodo) > diccionario[nombre_final == columna, max(periodo_hasta)],
+      "no_preguntado",
+      "no_respondido"
+    ),
+    NA_character_
+  )]
+}
+
+marcar_motivo_na(saber11_completo, "percentil_global", diccionario_homologacion_sb11)
+marcar_motivo_na(saberpro_completo, "estu_tipodocumentosb11", diccionario_homologacion_saberpro)
+# repite para cualquier otra variable donde esta distinción importe para tu análisis
+
+## --- Fail-fast de puntajes usando los parámetros de config.yml -------------
 rango_sb11 <- config$validacion_rangos$saber11_punt_global
 if (nrow(saber11_completo[!is.na(punt_global) & (punt_global < rango_sb11[1] | punt_global > rango_sb11[2])]) > 0) {
   stop("ERROR: Puntajes globales de Saber 11 fuera del rango permitido en config.yml")
@@ -86,15 +162,13 @@ if (nrow(saberpro_completo[!is.na(punt_global) & (punt_global < rango_spro[1] | 
   stop("ERROR: Puntajes globales de Saber Pro fuera del rango permitido en config.yml")
 }
 
-
+## --- Deduplicación --------------------------------------------------------
 saber11_completo <- saber11_completo[
   order(periodo),
   .SD[1],
   by = .(estu_fechanacimiento, estu_genero, estu_tipodocumento,
          estu_mcpio_reside, cole_cod_dane_establecimiento, fami_estratovivienda)
 ]
-
-nrow(saber11_completo)
 
 saberpro_completo <- saberpro_completo[
   order(periodo),
@@ -103,9 +177,6 @@ saberpro_completo <- saberpro_completo[
          estu_mcpio_reside, estu_coddane_cole_termino, fami_estratovivienda,
          estu_mcpio_presentacion, estu_inst_municipio)
 ]
-
-nrow(saberpro_completo)
-table(saberpro_completo$periodo)
 
 # La deduplicación inicial (sin variables de refuerzo) generaba pérdida
 # artificial en 2023-2024 y 2016-2, porque data.table agrupa NA==NA como
@@ -116,12 +187,10 @@ table(saberpro_completo$periodo)
 # de deduplicación. Verificado: caída en 2024 pasó de 65-84% a 13-29%,
 # consistente con el resto de la serie.
 
+## --- Renombrado final para unificar nombres antes del cruce ----------------
 # Preserva el tipo de documento ACTUAL de Saber Pro con otro nombre, antes de
 # liberar "estu_tipodocumento" para que sea el nombre común de la llave
 setnames(saberpro_completo, "estu_tipodocumento", "estu_tipodocumento_actual_sbpro")
 setnames(saberpro_completo, "estu_tipodocumentosb11", "estu_tipodocumento")
 setnames(saberpro_completo, "estu_coddane_cole_termino", "cole_cod_dane_establecimiento")
-
-
-
-
+saberpro_completo[cole_cod_dane_establecimiento == "", cole_cod_dane_establecimiento := NA]

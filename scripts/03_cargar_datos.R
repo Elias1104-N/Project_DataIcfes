@@ -13,7 +13,9 @@ lista_sb11 <- lapply(
   leer_saber11,
   diccionario = diccionario_homologacion_sb11,
   tipos_columna = c(cole_cod_dane_establecimiento = "character",
-                    estu_cod_reside_mcpio = "character",estu_cod_mcpio_presentacion = "character")
+                    estu_cod_reside_mcpio = "character",
+                    estu_cod_reside_depto = "character",
+                    estu_cod_mcpio_presentacion = "character")
 )
 
 saber11_completo <- rbindlist(lista_sb11, fill = TRUE)
@@ -26,14 +28,18 @@ archivos_saberpro_todos <- list.files(
 
 anios_detectados <- sapply(basename(archivos_saberpro_todos), extraer_anio_de_nombre_saberpro)
 archivos_saberpro <- archivos_saberpro_todos[anios_detectados >= config$ventana_saberpro$anio_desde & anios_detectados <= config$ventana_saberpro$anio_hasta]
+
 lista_saberpro <- lapply(
   archivos_saberpro,
   leer_saberpro,
   diccionario = diccionario_homologacion_saberpro,
   tipos_columna = c(estu_coddane_cole_termino = "character",
                     inst_cod_institucion = "character",
-                    estu_cod_reside_mcpio = "character", estu_snies_prgmacademico = "character",
-                    estu_cod_mcpio_presentacion = "character", estu_inst_codmunicipio = "character")
+                    estu_cod_reside_mcpio = "character",
+                    estu_cod_reside_depto = "character",
+                    estu_snies_prgmacademico = "character",
+                    estu_cod_mcpio_presentacion = "character",
+                    estu_inst_codmunicipio = "character")
 )
 
 saberpro_completo <- rbindlist(lista_saberpro, fill = TRUE)

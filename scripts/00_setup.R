@@ -1,8 +1,9 @@
 library(here)
 library(data.table)
-library(config) 
-library(yaml)
+data.table::setDTthreads(0)  # usa todos los núcleos disponibles
 library(readxl)
+library(writexl)
 
 config <- config::get(file = here("config.yml"))
 ruta_log <- here(config$paths$log_file)
+ 
