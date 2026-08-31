@@ -760,3 +760,46 @@ print(grupo_sospechoso)
 saberpro_completo[grupo_sospechoso, on = config$llave_cruce$estandar$saberpro][, .(periodo, estu_consecutivo)]
 
 
+table(conteo_identidad$N)
+grupo_228 <- conteo_identidad[N == 228]
+base_cruzada[grupo_228, on = names(grupo_228)[1:6]][, .(cole_cod_dane_establecimiento, periodo_saber11, periodo_saberpro)][1:5]
+
+######################################3
+setdiff(names(base_cruzada), NOMBRES_DEL_DICCIONARIO)  # columnas que tienes y no documenté
+
+
+
+
+
+
+# Segmenta la verificación según qué llave produjo cada fila
+conteo_identidad_estandar <- base_cruzada[llave_reforzada_usada == FALSE, .N,
+                                          by = .(estu_fechanacimiento, estu_genero, estu_tipodocumento,
+                                                 estu_cod_reside_mcpio, cole_cod_dane_establecimiento, fami_estratovivienda)]
+
+conteo_identidad_reforzada <- base_cruzada[llave_reforzada_usada == TRUE, .N,
+                                           by = .(estu_fechanacimiento, estu_genero, estu_tipodocumento,
+                                                  fami_estratovivienda, estu_mcpio_presentacion_saber11)]  # ajusta el nombre exacto si quedó distinto
+
+print(table(conteo_identidad_estandar$N))
+print(table(conteo_identidad_reforzada$N))
+
+
+
+
+
+nrow(base_cruzada)
+ncol(base_cruzada)
+
+matriz_cobertura
+dim(matriz_cobertura)
+
+tasa_vinculacion[order(periodo)]
+
+
+base_cruzada[, .N, by = rezago_anios][order(rezago_anios)]
+
+
+unique(saberpro_completo$periodo)[1:20]
+saberpro_completo[, .N, by = nchar(as.character(periodo))]
+
