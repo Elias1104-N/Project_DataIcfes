@@ -93,7 +93,7 @@ escribir_log(sprintf(
 vinculados_por_cohorte <- base_cruzada[, .N, by = .(periodo = periodo_saber11)]
 setnames(vinculados_por_cohorte, "N", "vinculados")
 
-tasa_vinculacion <- merge(denominador_sb11, vinculados_por_cohorte, by = "periodo", all.x = TRUE)
+tasa_vinculacion <- merge.data.table(denominador_sb11, vinculados_por_cohorte, by = "periodo", all.x = TRUE)
 tasa_vinculacion[is.na(vinculados), vinculados := 0]
 tasa_vinculacion[, tasa_pct := round(100 * vinculados / total_saber11, 2)]
 print(tasa_vinculacion[order(periodo)])
@@ -134,3 +134,4 @@ pct_faltantes <- sapply(base_cruzada, function(x) round(100 * sum(is.na(x)) / le
 print(sort(pct_faltantes[pct_faltantes > 0], decreasing = TRUE))
 
 escribir_log("Fase 5 (validacion) completada.", log_file = ruta_log)
+

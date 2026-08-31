@@ -47,3 +47,4 @@ fwrite(diccionario_final, here("output", "tables", "diccionario_base_final.csv")
 writexl::write_xlsx(diccionario_final, ruta_diccionario_final)
 
 escribir_log(sprintf("Diccionario final regenerado: %d columnas documentadas.", nrow(diccionario_final)), log_file = ruta_log)
+
