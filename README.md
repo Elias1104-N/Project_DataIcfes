@@ -14,9 +14,8 @@ derivada.
 
 ## 2. Equipo
 
-- [Nombre integrante 1]
-- [Nombre integrante 2]
-- [Nombre integrante 3]
+- María Mónica Murillo Rincón
+- Elias José Parra Royero
 
 ## 3. Estructura del repositorio
 
@@ -153,6 +152,6 @@ Todos los resultados reportados en el informe técnico son agregados, nunca a ni
 Antes de la entrega, este repositorio fue ejecutado de punta a punta en una sesión limpia por un equipo
 distinto al autor, siguiendo únicamente este README. [Completar con fecha y equipo que hizo la prueba.]
 
-## 11. Licencia / Contacto
+## 11. Licencia 
 
-Uso académico — Estadística Industrial, Universidad del Magdalena. Contacto: [correo del equipo].
+Uso académico — Estadística Industrial, Universidad del Magdalena.
