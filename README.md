@@ -14,9 +14,8 @@ derivada.
 
 ## 2. Equipo
 
-- [Nombre integrante 1]
-- [Nombre integrante 2]
-- [Nombre integrante 3]
+- María Mónica Murillo Rincón
+- Elias José Parra Royero
 
 ## 3. Estructura del repositorio
 
