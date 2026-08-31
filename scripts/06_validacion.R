@@ -64,7 +64,38 @@ escribir_log(sprintf(
   n_implausibles, 100 * n_implausibles / nrow(base_cruzada), n_invertidos
 ), tipo = "WARNING", log_file = ruta_log)
 
-## --- 4. Matriz de cobertura de cohortes (con interpretación) ---------------
+## --- 4. Tasa de vinculación por cohorte --------------------------------------
+# NOTA: este bloque se movió antes de la matriz de cobertura porque la
+# interpretación de la matriz (censura derecha / truncamiento izquierda)
+# depende de tasa_vinculacion y tasa_vinculacion_spro, calculadas aquí.
+# En el orden original del script, esas variables se usaban antes de existir
+# ("object 'tasa_vinculacion' not found").
+vinculados_por_cohorte <- base_cruzada[, .N, by = .(periodo = periodo_saber11)]
+setnames(vinculados_por_cohorte, "N", "vinculados")
+
+tasa_vinculacion <- merge.data.table(denominador_sb11, vinculados_por_cohorte, by = "periodo", all.x = TRUE)
+tasa_vinculacion[is.na(vinculados), vinculados := 0]
+tasa_vinculacion[, tasa_pct := round(100 * vinculados / total_saber11, 2)]
+print(tasa_vinculacion[order(periodo)])
+
+## --- 4b. Tasa de vinculación del lado Saber Pro (truncamiento izquierda) ---
+denominador_spro <- saberpro_completo[, .N, by = .(anio_saberpro)]
+setnames(denominador_spro, "N", "total_saberpro")
+
+vinculados_por_cohorte_spro <- base_cruzada[, .N, by = .(anio_saberpro)]
+setnames(vinculados_por_cohorte_spro, "N", "vinculados")
+
+tasa_vinculacion_spro <- merge(denominador_spro, vinculados_por_cohorte_spro, by = "anio_saberpro", all.x = TRUE)
+tasa_vinculacion_spro[is.na(vinculados), vinculados := 0]
+tasa_vinculacion_spro[, tasa_pct := round(100 * vinculados / total_saberpro, 2)]
+print(tasa_vinculacion_spro[order(anio_saberpro)])
+
+escribir_log(sprintf(
+  "Tasa de vinculacion Saber Pro (truncamiento izquierda) calculada para %d cohortes.",
+  nrow(tasa_vinculacion_spro)
+), log_file = ruta_log)
+
+## --- 5. Matriz de cobertura de cohortes (con interpretación) ---------------
 matriz_cobertura <- dcast(base_cruzada, anio_saber11 ~ anio_saberpro,
                           fun.aggregate = length, value.var = "estu_fechanacimiento")
 print(matriz_cobertura)
@@ -89,32 +120,6 @@ escribir_log(sprintf(
   length(cohortes_truncamiento_izq), paste(cohortes_truncamiento_izq, collapse=",")
 ), log_file = ruta_log)
 
-## --- 5. Tasa de vinculación por cohorte --------------------------------------
-vinculados_por_cohorte <- base_cruzada[, .N, by = .(periodo = periodo_saber11)]
-setnames(vinculados_por_cohorte, "N", "vinculados")
-
-tasa_vinculacion <- merge.data.table(denominador_sb11, vinculados_por_cohorte, by = "periodo", all.x = TRUE)
-tasa_vinculacion[is.na(vinculados), vinculados := 0]
-tasa_vinculacion[, tasa_pct := round(100 * vinculados / total_saber11, 2)]
-print(tasa_vinculacion[order(periodo)])
-
-## --- 5b. Tasa de vinculación del lado Saber Pro (truncamiento izquierda) ---
-denominador_spro <- saberpro_completo[, .N, by = .(anio_saberpro)]
-setnames(denominador_spro, "N", "total_saberpro")
-
-vinculados_por_cohorte_spro <- base_cruzada[, .N, by = .(anio_saberpro)]
-setnames(vinculados_por_cohorte_spro, "N", "vinculados")
-
-tasa_vinculacion_spro <- merge(denominador_spro, vinculados_por_cohorte_spro, by = "anio_saberpro", all.x = TRUE)
-tasa_vinculacion_spro[is.na(vinculados), vinculados := 0]
-tasa_vinculacion_spro[, tasa_pct := round(100 * vinculados / total_saberpro, 2)]
-print(tasa_vinculacion_spro[order(anio_saberpro)])
-
-escribir_log(sprintf(
-  "Tasa de vinculacion Saber Pro (truncamiento izquierda) calculada para %d cohortes.",
-  nrow(tasa_vinculacion_spro)
-), log_file = ruta_log)
-
 ## --- 6. Faltantes por variable ------------------------------------------------
 aplicar_motivo_na_todas <- function(datos, diccionario) {
   rango_min <- min(diccionario$periodo_desde)
@@ -134,4 +139,3 @@ pct_faltantes <- sapply(base_cruzada, function(x) round(100 * sum(is.na(x)) / le
 print(sort(pct_faltantes[pct_faltantes > 0], decreasing = TRUE))
 
 escribir_log("Fase 5 (validacion) completada.", log_file = ruta_log)
-

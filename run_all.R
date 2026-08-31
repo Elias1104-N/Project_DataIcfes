@@ -25,7 +25,7 @@ if (!FORZAR_RECARGA_COMPLETA && file.exists(ruta_checkpoint_sb11) && file.exists
   
   source(here::here("scripts", "03_cargar_datos.R"))
   source(here::here("scripts", "04_limpieza.R"))
-  
+
   if (!dir.exists(here("data", "processed"))) dir.create(here("data", "processed"), recursive = TRUE)
   saveRDS(saber11_completo, ruta_checkpoint_sb11)
   saveRDS(saberpro_completo, ruta_checkpoint_spro)
@@ -36,5 +36,6 @@ if (!FORZAR_RECARGA_COMPLETA && file.exists(ruta_checkpoint_sb11) && file.exists
 source(here::here("scripts", "05_cruce.R"))
 source(here::here("scripts", "06_validacion.R"))
 source(here::here("scripts", "07_diccionario_final.R"))
+source(here::here("scripts", "08_exportar.R"))
 
 message("Pipeline completado. Objeto generado: base_cruzada")
