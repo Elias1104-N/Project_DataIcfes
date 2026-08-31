@@ -152,6 +152,6 @@ Todos los resultados reportados en el informe técnico son agregados, nunca a ni
 Antes de la entrega, este repositorio fue ejecutado de punta a punta en una sesión limpia por un equipo
 distinto al autor, siguiendo únicamente este README. [Completar con fecha y equipo que hizo la prueba.]
 
-## 11. Licencia / Contacto
+## 11. Licencia 
 
-Uso académico — Estadística Industrial, Universidad del Magdalena. Contacto: [correo del equipo].
+Uso académico — Estadística Industrial, Universidad del Magdalena.
