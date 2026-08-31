@@ -609,3 +609,58 @@ Ejecución iniciada: 2026-08-31 01:01:21
 [2026-08-31 01:10:54] [WARNING] Diccionario final: 71 columna(s) sin descripcion manual, requieren completarse: anio_saber11, anio_saberpro, archivo_origen_saber11, archivo_origen_saberpro, cole_cod_dane_establecimiento, cole_cod_dane_establecimiento_saber11, cole_cod_dane_establecimiento_saberpro, cole_jornada, cole_naturaleza, cole_nombre_establecimiento_saber11, cole_nombre_establecimiento_saberpro, estu_cod_mcpio_presentacion_saber11, estu_cod_mcpio_presentacion_saberpro, estu_cod_reside_depto_saber11, estu_cod_reside_depto_saberpro, estu_cod_reside_mcpio, estu_cod_reside_mcpio_saber11, estu_cod_reside_mcpio_saberpro, estu_consecutivo_saber11, estu_consecutivo_saberpro, estu_depto_reside_saber11, estu_depto_reside_saberpro, estu_fechanacimiento, estu_genero, estu_inst_codmunicipio, estu_inst_departamento, estu_inst_municipio, estu_mcpio_presentacion, estu_mcpio_presentacion_saber11, estu_mcpio_presentacion_saberpro, estu_mcpio_reside_saber11, estu_mcpio_reside_saberpro, estu_nivel_prgm_academico, estu_prgm_academico, estu_snies_prgmacademico, estu_tipocarreradeseada, estu_tipodocumento, estu_tipodocumento_actual_sbpro, estu_tipodocumentosb11_motivo_na, estu_trabaja_actualmente_saber11, estu_trabaja_actualmente_saberpro, fami_estratovivienda, fami_ingreso_familiar_mensual_saber11, fami_ingreso_familiar_mensual_saberpro, fami_nivel_sisben, fami_nivelsisben, inst_cod_institucion, inst_nombre_institucion, inst_origen, llave_reforzada_usada, percentil_global_motivo_na, percentil_global_saber11, percentil_global_saberpro, periodo_saber11, periodo_saberpro, punt_c_naturales, punt_comuni_escrita, punt_global_saber11, punt_global_saberpro, punt_ingles_saber11, punt_ingles_saberpro, punt_lectura_critica_saber11, punt_lectura_critica_saberpro, punt_matematicas_saber11, punt_matematicas_saberpro, punt_sociales_ciudadanas_saber11, punt_sociales_ciudadanas_saberpro, puntaje_escala_comparable, rezago_anios, rezago_implausible, vinculacion_ambigua
 [2026-08-31 01:10:56] [INFO] Diccionario final regenerado: 71 columnas documentadas.
 [2026-08-31 01:10:58] [INFO] Base final exportada a CSV: 517119 registros, 71 variables -> C:/Users/usuario/OneDrive - Universidad del Magdalena/Documentos/Project_DataIcfes/output/tables/base_consolidada_saber11_saberpro.csv
+
+=====================================================================
+Ejecución iniciada: 2026-08-31 01:28:34
+=====================================================================
+[2026-08-31 01:28:35] [WARNING] Archivo Examen_Saber_11_20141.txt - Faltan variables (marcadas NA): punt_global
+[2026-08-31 01:28:37] [WARNING] Archivo Examen_Saber_11_20142.txt - Faltan variables (marcadas NA): percentil_global, estu_trabaja_actualmente, fami_ingreso_familiar_mensual, estu_tipocarreradeseada
+[2026-08-31 01:28:37] [WARNING] Archivo Examen_Saber_11_20151.txt - Faltan variables (marcadas NA): percentil_global
+[2026-08-31 01:28:38] [WARNING] Archivo Examen_Saber_11_20152.txt - Faltan variables (marcadas NA): percentil_global
+[2026-08-31 01:28:39] [INFO] Archivo Examen_Saber_11_20161.txt - Leído con éxito sin variables faltantes.
+[2026-08-31 01:28:40] [INFO] Archivo Examen_Saber_11_20162.txt - Leído con éxito sin variables faltantes.
+[2026-08-31 01:28:40] [INFO] Archivo Examen_Saber_11_20171.txt - Leído con éxito sin variables faltantes.
+[2026-08-31 01:28:42] [INFO] Archivo Examen_Saber_11_20172.txt - Leído con éxito sin variables faltantes.
+[2026-08-31 01:28:42] [INFO] Archivo Examen_Saber_11_20181.txt - Leído con éxito sin variables faltantes.
+[2026-08-31 01:28:44] [INFO] Archivo Examen_Saber_11_20182.txt - Leído con éxito sin variables faltantes.
+[2026-08-31 01:28:44] [INFO] Archivo Examen_Saber_11_20191.txt - Leído con éxito sin variables faltantes.
+[2026-08-31 01:28:46] [INFO] Archivo Examen_Saber_11_20192.txt - Leído con éxito sin variables faltantes.
+[2026-08-31 01:28:46] [INFO] Archivo Examen_Saber_11_20201.txt - Leído con éxito sin variables faltantes.
+[2026-08-31 01:28:48] [INFO] Archivo Examen_Saber_11_20202.txt - Leído con éxito sin variables faltantes.
+[2026-08-31 01:28:48] [INFO] Archivo Examen_Saber_11_20211.txt - Leído con éxito sin variables faltantes.
+[2026-08-31 01:28:50] [INFO] Archivo Examen_Saber_11_20212.txt - Leído con éxito sin variables faltantes.
+[2026-08-31 01:28:50] [INFO] Archivo Examen_Saber_11_20221.txt - Leído con éxito sin variables faltantes.
+[2026-08-31 01:28:52] [INFO] Archivo Examen_Saber_11_20222.txt - Leído con éxito sin variables faltantes.
+[2026-08-31 01:28:52] [INFO] Archivo Examen_Saber_11_20231.txt - Leído con éxito sin variables faltantes.
+[2026-08-31 01:28:54] [INFO] Archivo Examen_Saber_11_20232.txt - Leído con éxito sin variables faltantes.
+[2026-08-31 01:28:54] [INFO] Archivo Examen_Saber_11_20241.txt - Leído con éxito sin variables faltantes.
+[2026-08-31 01:28:56] [INFO] Archivo Examen_Saber_11_20242.txt - Leído con éxito sin variables faltantes.
+[2026-08-31 01:28:56] [INFO] Archivo Examen_Saber_11_20251.txt - Leído con éxito sin variables faltantes.
+[2026-08-31 01:28:58] [INFO] Archivo Examen_Saber_11_20252.txt - Leído con éxito sin variables faltantes.
+[2026-08-31 01:29:04] [WARNING] Archivo Examen_Saber_Pro_Genericas_2014.txt - Faltan variables (marcadas NA): punt_global, percentil_global
+[2026-08-31 01:29:05] [WARNING] Archivo Examen_Saber_Pro_Genericas_2015.txt - Faltan variables (marcadas NA): punt_global, percentil_global
+[2026-08-31 01:29:07] [WARNING] Archivo Examen_Saber_Pro_Genericas_2016.txt - Faltan variables (marcadas NA): fami_nivel_sisben, estu_trabaja_actualmente, fami_ingreso_familiar_mensual
+[2026-08-31 01:29:08] [WARNING] Archivo Examen_Saber_Pro_Genericas_2017.txt - Faltan variables (marcadas NA): fami_nivel_sisben, estu_trabaja_actualmente, fami_ingreso_familiar_mensual
+[2026-08-31 01:29:09] [WARNING] Archivo Examen_Saber_Pro_Genericas_2018.txt - Faltan variables (marcadas NA): fami_nivel_sisben, estu_trabaja_actualmente, fami_ingreso_familiar_mensual
+[2026-08-31 01:29:10] [WARNING] Archivo Examen_Saber_Pro_Genericas_2019.txt - Faltan variables (marcadas NA): fami_nivel_sisben, estu_trabaja_actualmente, fami_ingreso_familiar_mensual
+[2026-08-31 01:29:12] [WARNING] Archivo Examen_Saber_Pro_Genericas_2020.txt - Faltan variables (marcadas NA): fami_nivel_sisben, estu_trabaja_actualmente, fami_ingreso_familiar_mensual
+[2026-08-31 01:29:13] [INFO] Archivo Examen_Saber_Pro_Genericas_2021.txt - Leído con éxito sin variables faltantes.
+[2026-08-31 01:29:13] [INFO] Archivo Examen_Saber_Pro_Genericas_2022.txt - Leído con éxito sin variables faltantes.
+[2026-08-31 01:29:14] [WARNING] Archivo Examen_Saber_Pro_Genericas_2023.txt - Faltan variables (marcadas NA): estu_coddane_cole_termino
+[2026-08-31 01:29:15] [WARNING] Archivo Examen_Saber_Pro_Genericas_2024.txt - Faltan variables (marcadas NA): estu_tipodocumentosb11, estu_mcpio_reside, estu_depto_reside, estu_coddane_cole_termino
+[2026-08-31 01:33:55] [WARNING] [saber11_completo] 10 codigos de municipio no reconocidos por DIVIPOLA:    NA, 99999, 94663, 27086, 99572, 00061, 00066, 00068, 00031, 00009
+[2026-08-31 01:33:55] [WARNING] [saberpro_completo] 5 codigos de municipio no reconocidos por DIVIPOLA:    NA, 27086, 00002, 00016, 99999
+[2026-08-31 01:36:23] [INFO] Checkpoint guardado: saber11_completo/saberpro_completo en data/processed/.
+[2026-08-31 01:36:24] [INFO] Particion Saber Pro para cruce: 1913421 con llave estandar, 304349 con llave reforzada (anios 2023-2024).
+[2026-08-31 01:36:48] [WARNING] Excluidos por llave incompleta (NA) - estandar: 1030988 Saber11, 1055550 SaberPro. Reforzada: 807519 Saber11, 179683 SaberPro.
+[2026-08-31 01:39:09] [INFO] Cruce completado: 1900030 registros totales, 67 variables (1771684 via llave reforzada).
+[2026-08-31 01:39:09] [INFO] Base final: 1900030 registros, 67 variables.
+[2026-08-31 01:39:16] [WARNING] Vinculacion ambigua: 0 registros (0%), dentro de llave reforzada.
+[2026-08-31 01:39:16] [INFO] Umbral de rezago plausible calculado como percentil 99 de la distribucion real: 9 anios.
+[2026-08-31 01:39:16] [WARNING] Casos de rezago implausible: 270794 total (14.25%) — de estos, 270794 son orden invertido (rezago < 0).
+[2026-08-31 01:39:17] [INFO] Tasa de vinculacion Saber Pro (truncamiento izquierda) calculada para 11 cohortes.
+[2026-08-31 01:39:18] [INFO] Interpretacion cobertura: 6 cohortes Saber11 en zona de censura derecha (20231,20232,20241,20242,20251,20252), 3 cohortes SaberPro en zona de truncamiento izquierda (2014,2015,2016). Baja vinculacion en estas cohortes es ESTRUCTURAL, no procedimental.
+[2026-08-31 01:39:27] [INFO] Fase 5 (validacion) completada.
+[2026-08-31 01:39:36] [WARNING] Diccionario final: 71 columna(s) sin descripcion manual, requieren completarse: anio_saber11, anio_saberpro, archivo_origen_saber11, archivo_origen_saberpro, cole_cod_dane_establecimiento, cole_cod_dane_establecimiento_saber11, cole_cod_dane_establecimiento_saberpro, cole_jornada, cole_naturaleza, cole_nombre_establecimiento_saber11, cole_nombre_establecimiento_saberpro, estu_cod_mcpio_presentacion_saber11, estu_cod_mcpio_presentacion_saberpro, estu_cod_reside_depto_saber11, estu_cod_reside_depto_saberpro, estu_cod_reside_mcpio, estu_cod_reside_mcpio_saber11, estu_cod_reside_mcpio_saberpro, estu_consecutivo_saber11, estu_consecutivo_saberpro, estu_depto_reside_saber11, estu_depto_reside_saberpro, estu_fechanacimiento, estu_genero, estu_inst_codmunicipio, estu_inst_departamento, estu_inst_municipio, estu_mcpio_presentacion, estu_mcpio_presentacion_saber11, estu_mcpio_presentacion_saberpro, estu_mcpio_reside_saber11, estu_mcpio_reside_saberpro, estu_nivel_prgm_academico, estu_prgm_academico, estu_snies_prgmacademico, estu_tipocarreradeseada, estu_tipodocumento, estu_tipodocumento_actual_sbpro, estu_tipodocumentosb11_motivo_na, estu_trabaja_actualmente_saber11, estu_trabaja_actualmente_saberpro, fami_estratovivienda, fami_ingreso_familiar_mensual_saber11, fami_ingreso_familiar_mensual_saberpro, fami_nivel_sisben, fami_nivelsisben, inst_cod_institucion, inst_nombre_institucion, inst_origen, llave_reforzada_usada, percentil_global_motivo_na, percentil_global_saber11, percentil_global_saberpro, periodo_saber11, periodo_saberpro, punt_c_naturales, punt_comuni_escrita, punt_global_saber11, punt_global_saberpro, punt_ingles_saber11, punt_ingles_saberpro, punt_lectura_critica_saber11, punt_lectura_critica_saberpro, punt_matematicas_saber11, punt_matematicas_saberpro, punt_sociales_ciudadanas_saber11, punt_sociales_ciudadanas_saberpro, puntaje_escala_comparable, rezago_anios, rezago_implausible, vinculacion_ambigua
+[2026-08-31 01:39:36] [INFO] Diccionario final regenerado: 71 columnas documentadas.
+[2026-08-31 01:39:48] [INFO] Base final exportada a CSV: 1900030 registros, 71 variables -> C:/Users/usuario/OneDrive - Universidad del Magdalena/Documentos/Project_DataIcfes/output/tables/base_consolidada_saber11_saberpro.csv

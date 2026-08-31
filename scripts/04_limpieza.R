@@ -4,8 +4,8 @@
 #===============================================================================
 
 ## --- Tipificación de fechas -------------------------------------------------
-saber11_completo[, estu_fechanacimiento := as.IDate(estu_fechanacimiento, format = "%d/%m/%Y")]
-saberpro_completo[, estu_fechanacimiento := as.IDate(estu_fechanacimiento, format = "%d/%m/%Y")]
+saber11_completo[, estu_fechanacimiento := as.IDate(estu_fechanacimiento, format = "%Y/%m/%d")]
+saberpro_completo[, estu_fechanacimiento := as.IDate(estu_fechanacimiento, format = "%Y/%m/%d")]
 
 # NOTA: 913 casos de estu_fechanacimiento vacío en Saber Pro 2016 (de 245,181
 # registros) corresponden a campo "no respondido" por el estudiante, no a un
