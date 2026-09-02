@@ -4,7 +4,8 @@ archivos_sb11_todos <- list.files(
   full.names = TRUE
 )
 
-periodos_detectados <- sapply(basename(archivos_sb11_todos), extraer_periodo_de_nombre)
+periodos_detectados <- sapply(basename(archivos_sb11_todos), 
+                              extraer_periodo_de_nombre)
 
 archivos_sb11 <- archivos_sb11_todos[periodos_detectados >= config$ventana_saber11$periodo_desde & periodos_detectados <= config$ventana_saber11$periodo_hasta]
 
@@ -15,7 +16,8 @@ lista_sb11 <- lapply(
   tipos_columna = c(cole_cod_dane_establecimiento = "character",
                     estu_cod_reside_mcpio = "character",
                     estu_cod_reside_depto = "character",
-                    estu_cod_mcpio_presentacion = "character")
+                    estu_cod_mcpio_presentacion = "character",
+                    estu_consecutivo = "character")
 )
 
 saber11_completo <- rbindlist(lista_sb11, fill = TRUE)
@@ -39,7 +41,8 @@ lista_saberpro <- lapply(
                     estu_cod_reside_depto = "character",
                     estu_snies_prgmacademico = "character",
                     estu_cod_mcpio_presentacion = "character",
-                    estu_inst_codmunicipio = "character")
+                    estu_inst_codmunicipio = "character",
+                    estu_consecutivo = "character")
 )
 
 saberpro_completo <- rbindlist(lista_saberpro, fill = TRUE)

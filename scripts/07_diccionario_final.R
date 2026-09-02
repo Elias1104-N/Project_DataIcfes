@@ -5,6 +5,7 @@
 #===============================================================================
 
 # --- Hechos técnicos: siempre frescos, calculados sobre la base real ---------
+
 hechos_tecnicos <- data.table(
   nombre_variable = names(base_cruzada),
   tipo_dato = sapply(base_cruzada, function(x) class(x)[1]),

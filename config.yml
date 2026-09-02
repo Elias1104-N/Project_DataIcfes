@@ -17,19 +17,24 @@ default:
     anio_desde: 2014
     anio_hasta: 2025
   escala_saberpro:
-    periodo_cambio: 20162
+    periodo_cambio: 2016
+  ventana_cruce_saber11:
+    periodo_desde: 20141
+    periodo_hasta: 20252
+  ventana_cruce_saberpro:
+     periodo_desde: 20141
+     periodo_hasta:  20252
   validacion_rangos:
     saber11_punt_global: [0, 500]
     saberpro_punt_global: [0, 300]
-  llave_cruce:
-    estandar:
-      saber11:  ["estu_fechanacimiento", "estu_genero", "estu_tipodocumento", "estu_cod_reside_mcpio", "cole_cod_dane_establecimiento", "fami_estratovivienda"]
-      saberpro: ["estu_fechanacimiento", "estu_genero", "estu_tipodocumento", "estu_cod_reside_mcpio", "cole_cod_dane_establecimiento", "fami_estratovivienda"]
-    reforzada:
-      saber11:  ["estu_fechanacimiento", "estu_genero", "estu_tipodocumento", "fami_estratovivienda", "estu_mcpio_presentacion"]
-      saberpro: ["estu_fechanacimiento", "estu_genero", "estu_tipodocumento", "fami_estratovivienda", "estu_mcpio_presentacion"]
-    periodo_reforzada_desde: 2023
-    periodo_reforzada_hasta: 2024
+  llave_cruce_oficial:
+    consecutivo_saber11: "estu_consecutivo"
+    consecutivo_saberpro: "estu_consecutivo"
+    archivo_cruce: "data/raw/Saber11_SaberPro/cruce_saber11_saberpro.txt"    
+    columna_cruce_saber11: "estu_consecutivo_sb11"
+    columna_cruce_saberpro: "estu_consecutivo_sbpro"
+    columna_periodo_cruce_saber11: "periodo_sb11"
+    columna_periodo_cruce_saberpro: "periodo_sbpro"
   paths:
     raw_saber11:         "data/raw/Saber11"
     raw_saberpro:         "data/raw/SaberPro"

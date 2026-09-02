@@ -1,88 +1,65 @@
 #===============================================================================
-# 05_cruce.R — Cruce Saber11-SaberPro con llave condicional por periodo
+# 05_cruce.R — Cruce Saber11-SaberPro con llave oficial ICFES 
 #===============================================================================
 
-llave_estandar_sb11  <- config$llave_cruce$estandar$saber11
-llave_estandar_spro  <- config$llave_cruce$estandar$saberpro
-llave_reforzada_sb11 <- config$llave_cruce$reforzada$saber11
-llave_reforzada_spro <- config$llave_cruce$reforzada$saberpro
-periodo_ref_desde    <- config$llave_cruce$periodo_reforzada_desde
-periodo_ref_hasta    <- config$llave_cruce$periodo_reforzada_hasta
+col_cruce_sb11 <- config$llave_cruce_oficial$columna_cruce_saber11
+col_cruce_spro <- config$llave_cruce_oficial$columna_cruce_saberpro
+var_consecutivo_sb11 <- config$llave_cruce_oficial$consecutivo_saber11
+var_consecutivo_spro <- config$llave_cruce_oficial$consecutivo_saberpro
 
-if (length(llave_estandar_sb11) != length(llave_estandar_spro)) {
-  stop("La llave estandar tiene distinto numero de columnas entre saber11 y saberpro en config.yml.")
-}
-if (length(llave_reforzada_sb11) != length(llave_reforzada_spro)) {
-  stop("La llave reforzada tiene distinto numero de columnas entre saber11 y saberpro en config.yml.")
-}
+# Denominador para la tasa de vinculacion
 
-validar_columnas_llave <- function(datos, columnas, nombre_tabla) {
-  faltantes <- setdiff(columnas, names(datos))
-  if (length(faltantes) > 0) {
-    stop(sprintf("[%s] Faltan columnas de la llave de cruce: %s", nombre_tabla, paste(faltantes, collapse = ", ")))
-  }
-}
-validar_columnas_llave(saber11_completo, llave_estandar_sb11, "saber11_completo (estandar)")
-validar_columnas_llave(saberpro_completo, llave_estandar_spro, "saberpro_completo (estandar)")
-validar_columnas_llave(saber11_completo, llave_reforzada_sb11, "saber11_completo (reforzada)")
-validar_columnas_llave(saberpro_completo, llave_reforzada_spro, "saberpro_completo (reforzada)")
-
-# --- Denominador para tasa de vinculación (ANTES de excluir por llave incompleta) ---
 denominador_sb11 <- saber11_completo[, .N, by = periodo]
 setnames(denominador_sb11, "N", "total_saber11")
 
-# --- Partición de Saber Pro por AÑO REAL (anio_saberpro), no por periodo crudo ---
-# CORREGIDO: antes se comparaba 'periodo' (código AAAAS de 5 dígitos, ej. 20233)
-# directamente contra periodo_ref_desde/hasta (2023, 2024) — nunca coincidía.
-saberpro_estandar  <- saberpro_completo[anio_saberpro < periodo_ref_desde | anio_saberpro > periodo_ref_hasta]
-saberpro_reforzada <- saberpro_completo[anio_saberpro >= periodo_ref_desde & anio_saberpro <= periodo_ref_hasta]
+# Validacion de calidad de la llave oficial ICFES
+# A diferencia de la llave anterior, el riesgo de colision no es nuestro sino 
+# de la tabla que publica el ICFES. Igual lo verificamos
+
+dup_sb11 <- base_cruce_icfes[, .N, by = c(col_cruce_sb11)][N > 1]
+dup_spro <- base_cruce_icfes[, .N, by = c(col_cruce_spro)][N > 1]
 
 escribir_log(sprintf(
-  "Particion Saber Pro para cruce: %d con llave estandar, %d con llave reforzada (anios %s-%s).",
-  nrow(saberpro_estandar), nrow(saberpro_reforzada), periodo_ref_desde, periodo_ref_hasta
-), log_file = ruta_log)
+  "Base de cruce ICFES: %d consecutivos de Saber11 duplicados (%.2f%%),
+   %d de Saber Pro duplicados (%.2f%%).",
+  nrow(dup_sb11), 100 * nrow(dup_sb11) / nrow(base_cruce_icfes),
+  nrow(dup_spro), 100 * nrow(dup_spro) / nrow(base_cruce_icfes)
+), tipo = "WARNING", log_file = "ruta_log")
 
-# --- Excluir filas con NA en cualquier columna de la llave, ANTES del merge -
-filtrar_llave_completa <- function(datos, columnas_llave) {
-  filtro <- datos[, Reduce(`&`, lapply(.SD, function(x) !is.na(x))), .SDcols = columnas_llave]
-  list(completos = datos[filtro], incompletos = datos[!filtro])
+
+# Registros con NA en la propia tabla de cruce (no deberían existir, pero se
+# excluyen explícitamente antes del merge por la misma razón que antes:
+# NA == NA no debe generar una coincidencia).
+
+cruce_completo <- base_cruce_icfes[!is.na(get(col_cruce_sb11)) & !is.na(get(col_cruce_spro))]
+n_incompletos_cruce <- nrow(base_cruce_icfes) - nrow(cruce_completo)
+
+if (n_incompletos_cruce > 0) {
+  escribir_log(sprintf(
+    "Excluidas %d filas de la base de cruce ICFES por NA en algun consecutivo.",
+    n_incompletos_cruce
+  ), tipo = "WARNING", log_file = ruta_log)
 }
 
-sb11_estandar        <- filtrar_llave_completa(saber11_completo, llave_estandar_sb11)
-spro_estandar_split  <- filtrar_llave_completa(saberpro_estandar, llave_estandar_spro)
-sb11_reforzada       <- filtrar_llave_completa(saber11_completo, llave_reforzada_sb11)
-spro_reforzada_split <- filtrar_llave_completa(saberpro_reforzada, llave_reforzada_spro)
+# --- Cruce en dos pasos: Saber11 -> tabla de cruce -> SaberPro ---------------
 
-escribir_log(sprintf(
-  "Excluidos por llave incompleta (NA) - estandar: %d Saber11, %d SaberPro. Reforzada: %d Saber11, %d SaberPro.",
-  nrow(sb11_estandar$incompletos), nrow(spro_estandar_split$incompletos),
-  nrow(sb11_reforzada$incompletos), nrow(spro_reforzada_split$incompletos)
-), tipo = "WARNING", log_file = ruta_log)
+paso1 <- merge.data.table(
+  saber11_completo, cruce_completo,
+  by.x = var_consecutivo_sb11, by.y = col_cruce_sb11,
+  all = FALSE
+)
 
-# --- Cruce 1: llave estándar --------------------------------------------------
-base_cruzada_estandar <- merge.data.table(
-  sb11_estandar$completos, spro_estandar_split$completos,
-  by.x = llave_estandar_sb11, by.y = llave_estandar_spro,
+base_cruzada <- merge.data.table(
+  paso1, saberpro_completo,
+  by.x = col_cruce_spro, by.y = var_consecutivo_spro,
   suffixes = c("_saber11", "_saberpro"),
   all = FALSE
 )
-base_cruzada_estandar[, llave_reforzada_usada := FALSE]
 
-# --- Cruce 2: llave reforzada (2023-2024) ------------------------------------
-base_cruzada_reforzada <- merge.data.table(
-  sb11_reforzada$completos, spro_reforzada_split$completos,
-  by.x = llave_reforzada_sb11, by.y = llave_reforzada_spro,
-  suffixes = c("_saber11", "_saberpro"),
-  all = FALSE
-)
-base_cruzada_reforzada[, llave_reforzada_usada := TRUE]
-
-# --- Unión final --------------------------------------------------------------
-base_cruzada <- rbindlist(list(base_cruzada_estandar, base_cruzada_reforzada), fill = TRUE)
-
-rm(base_cruzada_estandar, base_cruzada_reforzada, saberpro_estandar, saberpro_reforzada)
+rm(paso1)
 gc()
 
-escribir_log(sprintf("Cruce completado: %d registros totales, %d variables (%d via llave reforzada).",
-                     nrow(base_cruzada), ncol(base_cruzada), base_cruzada[llave_reforzada_usada == TRUE, .N]),
-             log_file = ruta_log)
+escribir_log(sprintf(
+  "Cruce completado (llave oficial ICFES): %d registros totales, %d variables.",
+  nrow(base_cruzada), ncol(base_cruzada)
+), log_file = ruta_log)

@@ -13,6 +13,7 @@ ruta_checkpoint_spro  <- here("data", "processed", "saberpro_completo.rds")
 
 # Cambia a FALSE cuando ya confirmaste que la carga+limpieza está bien y
 # solo quieres iterar sobre el cruce (05_cruce.R) sin repetir todo lo demás.
+
 FORZAR_RECARGA_COMPLETA <- T
 
 if (!FORZAR_RECARGA_COMPLETA && file.exists(ruta_checkpoint_sb11) && file.exists(ruta_checkpoint_spro)) {
@@ -32,6 +33,10 @@ if (!FORZAR_RECARGA_COMPLETA && file.exists(ruta_checkpoint_sb11) && file.exists
   escribir_log("Checkpoint guardado: saber11_completo/saberpro_completo en data/processed/.", log_file = ruta_log)
   
 }
+
+# Se carga SIEMPRE, fuera del if/else de arriba: el checkpoint solo cubre
+# saber11_completo/saberpro_completo, no la base de cruce oficial ICFES.
+source(here::here("scripts", "03b_cargar_cruce.R"))
 
 source(here::here("scripts", "05_cruce.R"))
 source(here::here("scripts", "06_validacion.R"))
