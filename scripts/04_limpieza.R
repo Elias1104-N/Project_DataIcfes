@@ -96,15 +96,9 @@ saber11_completo[fami_estratovivienda == "", fami_estratovivienda := NA]
 saberpro_completo[fami_estratovivienda == "", fami_estratovivienda := NA]
 
 ## --- Normalización de texto libre -------------------------------------------
-# Colapsa espacios múltiples, quita espacios al inicio/final, unifica
-# mayúsculas y quita tildes/diacríticos — evita que la misma institución o
-# colegio cuente como "distinto" solo por diferencias de formato.
-normalizar_texto <- function(x) {
-  x <- toupper(trimws(x))
-  x <- gsub("\\s+", " ", x)
-  x <- iconv(x, from = "UTF-8", to = "ASCII//TRANSLIT")
-  return(x)
-}
+# normalizar_texto() ahora se define en 02b_funciones_limpieza.R (se carga
+# siempre en run_all.R, antes que este script) — no se redefine aquí para
+# evitar que una versión desactualizada sobreescriba la buena.
 
 saberpro_completo[, inst_nombre_institucion := normalizar_texto(inst_nombre_institucion)]
 saber11_completo[, cole_nombre_establecimiento := normalizar_texto(cole_nombre_establecimiento)]
@@ -133,19 +127,8 @@ validar_codigos_dane(saber11_completo, "saber11_completo")
 validar_codigos_dane(saberpro_completo, "saberpro_completo")
 
 ## --- Formalizar la distinción no_preguntado / no_respondido -----------------
-marcar_motivo_na <- function(datos, columna, diccionario, col_periodo = "periodo") {
-  col_flag <- paste0(columna, "_motivo_na")
-  datos[, (col_flag) := fifelse(
-    is.na(get(columna)),
-    fifelse(
-      get(col_periodo) < diccionario[nombre_final == columna, min(periodo_desde)] |
-        get(col_periodo) > diccionario[nombre_final == columna, max(periodo_hasta)],
-      "no_preguntado",
-      "no_respondido"
-    ),
-    NA_character_
-  )]
-}
+# marcar_motivo_na() ahora se define en 02b_funciones_limpieza.R (se carga
+# siempre en run_all.R, antes que este script) — no se redefine aquí.
 
 marcar_motivo_na(saber11_completo, "percentil_global", diccionario_homologacion_sb11)
 marcar_motivo_na(saberpro_completo, "estu_tipodocumentosb11", diccionario_homologacion_saberpro)
