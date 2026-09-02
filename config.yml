@@ -17,7 +17,7 @@ default:
     anio_desde: 2014
     anio_hasta: 2025
   escala_saberpro:
-    periodo_cambio: 2016
+    periodo_cambio: 20162
   ventana_cruce_saber11:
     periodo_desde: 20141
     periodo_hasta: 20252

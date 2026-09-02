@@ -16,10 +16,11 @@ base_cruce_icfes <- fread(
 )
 
 n_total_cruce <- nrow(base_cruce_icfes)
+n_total_cruce
 
 base_cruce_icfes <- base_cruce_icfes[
-  get(col_cruce_periodo_sb11) >= config$ventana_cruce_saber11$periodo_desde & 
-    get(col_cruce_periodo_sb11) <= config$ventana_cruce_saberpro$periodo_hasta &
+  get(col_cruce_periodo_sb11) >= config$ventana_cruce_saber11$periodo_desde &
+    get(col_cruce_periodo_sb11) <= config$ventana_cruce_saber11$periodo_hasta & 
     get(col_cruce_periodo_spro) >= config$ventana_cruce_saberpro$periodo_desde &
     get(col_cruce_periodo_spro) <= config$ventana_cruce_saberpro$periodo_hasta
 ]

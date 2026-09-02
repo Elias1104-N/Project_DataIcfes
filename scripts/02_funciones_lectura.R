@@ -58,3 +58,4 @@ leer_saberpro <- function(ruta, diccionario, tipos_columna = NULL) {
   datos[, archivo_origen := nombre_archivo]
   return(datos)
 }
+

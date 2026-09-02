@@ -4,7 +4,6 @@
 #===============================================================================
 
 ## --- 1. Registros y variables de la base final ------------------------------
-
 escribir_log(sprintf("Base final: %d registros, %d variables.",
                      nrow(base_cruzada), ncol(base_cruzada)), log_file = ruta_log)
 
@@ -13,10 +12,12 @@ escribir_log(sprintf("Base final: %d registros, %d variables.",
 # variables demográficas: solo puede venir de que la propia tabla de cruce
 # del ICFES (base_cruce_icfes, ver 05_cruce.R) tenga un consecutivo repetido
 # de alguno de los dos lados. dup_sb11/dup_spro ya se calcularon en 05_cruce.R.
-
+# OJO: usa "estu_consecutivo_sb11" (nombre YA renombrado en 05_cruce.R al
+# final del cruce), no var_consecutivo_sb11 (que sigue siendo "estu_consecutivo",
+# el nombre de ANTES del renombrado) — si no, get() no encuentra la columna.
 base_cruzada[, vinculacion_ambigua :=
-               get(var_consecutivo_sb11) %in% dup_sb11[[col_cruce_sb11]] |
-               get(col_cruce_spro)       %in% dup_spro[[col_cruce_spro]]
+               get("estu_consecutivo_sb11") %in% dup_sb11[[col_cruce_sb11]] |
+               get(col_cruce_spro)          %in% dup_spro[[col_cruce_spro]]
 ]
 
 n_ambiguos <- base_cruzada[vinculacion_ambigua == TRUE, .N]
@@ -27,7 +28,6 @@ escribir_log(sprintf(
 ), tipo = "WARNING", log_file = ruta_log)
 
 ## --- 3. Rezago entre pruebas (umbral basado en percentiles reales) ---------
-
 base_cruzada[, anio_saber11 := periodo_saber11 %/% 10]
 base_cruzada[, rezago_anios := anio_saberpro - anio_saber11]
 
@@ -38,7 +38,6 @@ print(distribucion_rezago)
 # Se prefiere esto a un número fijo (el HTML explícita que no hay una única
 # respuesta correcta): el corte se apoya en la forma real de la distribución
 # de ESTA base, no en una suposición externa.
-
 rezagos_validos <- base_cruzada[rezago_anios >= 0, rezago_anios]
 UMBRAL_REZAGO_MAX <- ceiling(quantile(rezagos_validos, 0.99, na.rm = TRUE))
 
@@ -62,7 +61,6 @@ escribir_log(sprintf(
 # depende de tasa_vinculacion y tasa_vinculacion_spro, calculadas aquí.
 # En el orden original del script, esas variables se usaban antes de existir
 # ("object 'tasa_vinculacion' not found").
-
 vinculados_por_cohorte <- base_cruzada[, .N, by = .(periodo = periodo_saber11)]
 setnames(vinculados_por_cohorte, "N", "vinculados")
 
@@ -72,7 +70,6 @@ tasa_vinculacion[, tasa_pct := round(100 * vinculados / total_saber11, 2)]
 print(tasa_vinculacion[order(periodo)])
 
 ## --- 4b. Tasa de vinculación del lado Saber Pro (truncamiento izquierda) ---
-
 denominador_spro <- saberpro_completo[, .N, by = .(anio_saberpro)]
 setnames(denominador_spro, "N", "total_saberpro")
 
@@ -90,26 +87,22 @@ escribir_log(sprintf(
 ), log_file = ruta_log)
 
 ## --- 5. Matriz de cobertura de cohortes (con interpretación) ---------------
-
 matriz_cobertura <- dcast(base_cruzada, anio_saber11 ~ anio_saberpro,
-                          fun.aggregate = length, value.var = "estu_consecutivo")
+                          fun.aggregate = length, value.var = "estu_consecutivo_sb11")
 print(matriz_cobertura)
 
 # Interpretación explícita, requerida por el criterio C del HTML: distinguir
 # pérdida ESTRUCTURAL (inherente a la ventana temporal, no corregible) de
 # pérdida ATRIBUIBLE AL PROCEDIMIENTO (llave, deduplicación, calidad de dato).
-
 anio_min_ventana <- config$ventana_saber11$periodo_desde %/% 10
 anio_max_ventana <- config$ventana_saberpro$anio_hasta
 
 # Censura derecha: cohortes Saber 11 recientes que estructuralmente no pueden
 # tener aún su Saber Pro (el estudiante todavía no se ha graduado de pregrado).
-
 cohortes_censura_derecha <- tasa_vinculacion[periodo %/% 10 > (anio_max_ventana - 3), periodo]
 
 # Truncamiento izquierda: cohortes Saber Pro tempranas cuyo Saber 11
 # correspondiente cae estructuralmente antes del inicio de la ventana.
-
 cohortes_truncamiento_izq <- tasa_vinculacion_spro[anio_saberpro < (anio_min_ventana + 3), anio_saberpro]
 
 escribir_log(sprintf(
@@ -119,7 +112,6 @@ escribir_log(sprintf(
 ), log_file = ruta_log)
 
 ## --- 6. Faltantes por variable ------------------------------------------------
-
 aplicar_motivo_na_todas <- function(datos, diccionario) {
   rango_min <- min(diccionario$periodo_desde)
   rango_max <- max(diccionario$periodo_hasta)

@@ -8,6 +8,7 @@
 # por el enunciado para el Entregable 1). Si alguien agrega una columna nueva
 # más adelante sin seguir la convención, esto debe detener la ejecución, no
 # dejarlo pasar en silencio.
+
 nombres_invalidos <- names(base_cruzada)[
   grepl("[A-ZÁÉÍÓÚÑ ]", names(base_cruzada))
 ]
@@ -19,6 +20,7 @@ if (length(nombres_invalidos) > 0) {
 }
 
 ## --- Exportación --------------------------------------------------------------
+
 ruta_salida_base <- here("output", "tables", "base_consolidada_saber11_saberpro.csv")
 
 if (!dir.exists(here("output", "tables"))) dir.create(here("output", "tables"), recursive = TRUE)
