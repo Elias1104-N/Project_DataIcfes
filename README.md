@@ -83,9 +83,6 @@ Los microdatos **no se incluyen en este repositorio** (ver sección 8). Para rep
 3. Ubicar en `data/metadata/` los diccionarios de homologación (`diccionario_saber11.xlsx`,
    `diccionario_saberpro.xlsx`) y la tabla DIVIPOLA del DANE (`divipola.xlsx`).
 
-**Fecha de consulta a DataICFES:** [completar] · **Archivos utilizados:** [completar, ver informe técnico
-sección 2].
-
 ## 6. Configuración (`config.yml`)
 
 Es el **único** lugar que debe modificarse para actualizar la base con un año nuevo. No requiere tocar
